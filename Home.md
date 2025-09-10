@@ -61,7 +61,7 @@ finally:
 ## 📚 Documentation Navigation
 
 - **[Installation Guide](Installation-Guide)** - Detailed installation steps and environment configuration
-- **[Function Details](Function-main)** - Complete API function documentation
+- **[Function Details](Function-detail)** - Complete API function documentation
 
 ## 🎯 Supported Device Types
 
@@ -74,7 +74,7 @@ Currently supports the following robot types:
 
 If you encounter problems during usage:
 
-1. Check the [Function Details Documentation](Function-main) to understand API usage
+1. Check the [Function Details Documentation](Function-detail) to understand API usage
 2. Ensure you are using **public** function interfaces
 3. Check device connections and WebSocket configuration
 4. Create an `issue`
