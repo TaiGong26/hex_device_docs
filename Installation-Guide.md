@@ -1,3 +1,8 @@
+### Prerequisites
+
+- **Python 3.8.10 or higher**
+- Anaconda Distribution (recommended for beginners) - includes Python, NumPy, and commonly used scientific computing packages
+
 ### Option 1: Package Installation
 
 To install the library in your Python environment:

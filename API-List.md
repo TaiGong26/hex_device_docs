@@ -4,13 +4,13 @@
 - The system provides two core base classes: `DeviceBase` and `MotorBase`. All device classes inherit from `DeviceBase`, while device classes with motors inherit from `MotorBase`, implementing common interfaces between devices.
 
 # Common Interfaces
-**[HexDeviceApi](Function-common)**  
-**[DeviceBase](Function-common#devicebase)**  
-**[MotorBase](Function-common#motorbase)**  
+**[HexDeviceApi](API-Common)**  
+**[DeviceBase](API-Common#devicebase)**  
+**[MotorBase](API-Common#motorbase)**  
 
 # Chassis
-**[ChassisMaver](Function-maver)**  
+**[ChassisMaver](API-ChassisMaver)**  
 
 # Robotic Arm
-**[ArmArcher](Function-archer)**  
+**[ArmArcher](API-ArmArcher)**  
 

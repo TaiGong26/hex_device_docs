@@ -45,8 +45,8 @@ arm.command_timeout_check(False)
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand]]):
 ```
-Sets robotic arm motor commands with automatic validation for position and velocity commands.
-Warning!!!!Only once of command can be set at the same time.
+Sets robotic arm motor commands with automatic validation for position and velocity commands.  
+> **Warning!!!!**Only once of command can be set at the same time.
 
 Examples:
 ```python
