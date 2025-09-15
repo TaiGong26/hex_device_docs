@@ -10,6 +10,7 @@
 
 # Chassis
 **[ChassisMaver](API-ChassisMaver)**  
+**[ChassisMark2](API-ChassisMark2)**  
 
 # Robotic Arm
 **[ArmArcher](API-ArmArcher)**  

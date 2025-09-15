@@ -1,35 +1,23 @@
-The `ChassisMaver` class inherits from [DeviceBase](Function-common#devicebase) and [MotorBase](Function-common#motorbase), primarily implementing the mapping to `BaseStatus`. This class corresponds to `BaseStatus` in the proto, managing chassis status and motor control.
+The `ChassisMark2` class inherits from [DeviceBase](Function-common#devicebase) and [MotorBase](Function-common#motorbase), primarily implementing the mapping to `BaseStatus`. This class corresponds to `BaseStatus` in the proto, managing chassis status and motor control.
 
 Supported robot types:
-- `RtCustomPcwVehicle`: Custom PCW vehicle
-- `RtPcwVehicle`: PCW vehicle
+- `RtArk2LrDriver`: Chassis Mark2
 
-# ChassisMaver
+# ChassisMark2
 ```python
-class ChassisMaver(DeviceBase, MotorBase):
+class ChassisMark2(DeviceBase, MotorBase):
 ```
 
 ## `__init__`
 ```python
-def __init__(self, motor_count: int = 8, name: str = "ChassisMaver", control_hz: int = 500, send_message_callback=None):
+def __init__(self, motor_count: int = 2, name: str = "ChassisMark2", control_hz: int = 500, send_message_callback=None):
 ```
-Automatically called by HexDeviceApi to initialize the chassis Maver device.
+Automatically called by HexDeviceApi to initialize the chassis Mark2 device.
 
 Examples:
 ```python
 # Usually called internally by HexDeviceApi
-chassis = ChassisMaver(motor_count=8, name="MyChassis", control_hz=500)
-```
-
-## set_robot_type
-```python
-def set_robot_type(self, robot_type):
-```
-Sets the robot type, which must be one of the supported types.
-
-Examples:
-```python
-chassis.set_robot_type(public_api_types_pb2.RobotType.RtPcwVehicle)
+chassis = ChassisMark2(motor_count=2, name="MyChassis", control_hz=500)
 ```
 
 ## clear_odom_bias
@@ -169,25 +157,25 @@ Sets chassis motor commands, only available in non-simple control mode.
 Examples:
 ```python
 # Set wheel speed commands
-chassis.motor_command(CommandType.SPEED, [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0])
+chassis.motor_command(CommandType.SPEED, [1.0, 1.0])
 
 # Set brake commands
-chassis.motor_command(CommandType.BRAKE, [True, True, True, True, True, True, True, True])
+chassis.motor_command(CommandType.BRAKE, [True, True])
 ```
 
 ## set_vehicle_speed
 ```python
 def set_vehicle_speed(self, speed_x: float, speed_y: float, speed_z: float):
 ```
-Sets the vehicle XYZ speed, only available in simple control mode.
+Sets the vehicle XYZ speed, only available in simple control mode. Note: speed_y is always 0 for Mark2.
 
 Examples:
 ```python
 # Set to move forward at 1m/s
 chassis.set_vehicle_speed(1.0, 0.0, 0.0)
 
-# Set to move left at 0.5m/s
-chassis.set_vehicle_speed(0.0, 0.5, 0.0)
+# Set to turn with 0.5 rad/s angular velocity
+chassis.set_vehicle_speed(0.0, 0.0, 0.5)
 
 # Stop
 chassis.set_vehicle_speed(0.0, 0.0, 0.0)
