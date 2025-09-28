@@ -4,24 +4,18 @@
 - Anaconda Distribution (recommended for beginners) - includes Python, NumPy, and commonly used scientific computing packages
 
 ### Option 1: Package Installation
+To install the library in your Python environment through pip:
+```
+python3 -m pip install hex_device
+```
 
-To install the library in your Python environment:
+Or install from source code:
 
 ```
 python3 -m pip install .
 ```
 
-### Option 2: Direct Add
-
-If you prefer to run the library without installing it in your Python environment:
-
-1. **Compile Protocol Buffer messages:**
-   ```bash
-   mkdir ./hex_device/generated
-   protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto
-   ```
-   
-   **Note:** This library requires newer protoc. If compilation fails, please try to install protoc-27.1 using the binary installation method below.
+**Note:** This library requires newer protoc. If compilation fails, please try to install protoc-27.1 using the binary installation method below.
 
    **Installing protoc-27.1 through binary:**
    ```bash
@@ -37,6 +31,16 @@ If you prefer to run the library without installing it in your Python environmen
    
    #  Verify installation
    protoc --version  # Should show libprotoc 27.1
+   ```
+
+### Option 2: Direct Add
+
+If you prefer to run the library without installing it in your Python environment:
+
+1. **Compile Protocol Buffer messages:**
+   ```bash
+   mkdir ./hex_device/generated
+   protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto
    ```
 
 2. **Install dependencies:**

@@ -1,3 +1,9 @@
+**Guide：**
+- [HexDeviceApi](#hexdeviceapi)
+- [DeviceBase](#devicebase)
+- [MotorBase](#motorbase)
+- [OptionalDeviceBase](#optionaldevicebase)
+
 # HexDeviceApi
 
 ## `__init__`
@@ -325,6 +331,24 @@ if state == "error":
     print(f"Motor 0 is in error state")
 ```
 
+## get_simple_motor_status
+```python
+def get_simple_motor_status(self) -> Dict[str, Any]:
+        """Get simple motor status"""
+        with self._data_lock:
+            return {
+                'pos': self._positions.tolist(), //rad
+                'vel': self._velocities.tolist(), //rad/s
+                'eff': self._torques.tolist(), //Nm
+                'ts': {
+                        "s": self._last_update_time // 1_000_000_000,
+                        "ns": self._last_update_time % 1_000_000_000,
+                    }
+            }
+```
+Get basic motor motion information at one time.
+
+
 ## get_motor_position
 ```python
 def get_motor_position(self, motor_index: int) -> float:
@@ -451,7 +475,7 @@ linear_velocity = motor.get_motor_velocity(0) * radius
 
 ## motor_command
 ```python
-def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand]]):
+def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
 ```
 Sets motor commands, supporting five command types: BRAKE, SPEED, POSITION, TORQUE, and MIT.  
 Examples:
@@ -467,6 +491,9 @@ motor.motor_command(CommandType.BRAKE, [True, True, False])
 
 # Set torque command
 motor.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
+
+# Use numpy data
+motor.motor_command(CommandType.POSITION, np.array([0.0, 1.57, 3.14]))
 ```
 
 ## mit_motor_command
@@ -543,4 +570,121 @@ print(f"Velocity: {status['velocity']} rad/s")
 print(f"Target velocity: {status['target_velocity']} rad/s")
 if status['error_code'] is not None:
     print(f"Error code: {status['error_code']}")
+```
+
+# OptionalDeviceBase
+
+## `__init__`
+```python
+def __init__(self, read_only: bool, name: str = "", send_message_callback=None):
+```
+Initializes an optional device base class. These devices are matched by message type rather than robot_type and are used for processing optional fields in APIUp messages.
+
+**Parameters:**
+- `read_only` (bool): Whether the device is read-only
+- `name` (str, optional): Device name, defaults to "OptionalDevice"
+- `send_message_callback` (callable, optional): Callback function for sending messages
+
+**Examples:**
+```python
+# Create a read-only optional device
+device = MyOptionalDevice(read_only=True, name="IMUDevice")
+
+# Create a read-write optional device with callback
+device = MyOptionalDevice(read_only=False, name="GamepadDevice", send_message_callback=my_callback)
+```
+
+## set_has_new_data
+```python
+def set_has_new_data(self):
+```
+Sets the current data status to have new data. This method is thread-safe.
+
+**Examples:**
+```python
+# Called internally when new data arrives
+device.set_has_new_data()
+```
+
+## has_new_data
+```python
+def has_new_data(self) -> bool:
+```
+Checks if there is new data available. This method is thread-safe.
+
+**Returns:**
+- `bool`: True if there is new data, False otherwise
+
+**Examples:**
+```python
+if device.has_new_data():
+    # Process new data
+    process_optional_data(device)
+```
+
+## clear_new_data_flag
+```python
+def clear_new_data_flag(self):
+```
+Clears the new data flag, indicating that new data has been processed. This method is thread-safe.
+
+**Examples:**
+```python
+if device.has_new_data():
+    # Process data
+    process_data(device)
+    device.clear_new_data_flag()
+```
+
+## get_device_summary
+```python
+def get_device_summary(self) -> Dict[str, Any]:
+```
+Gets the device status summary including name, data status, and last update time.
+
+**Returns:**
+- `Dict[str, Any]`: Dictionary containing device status information
+
+**Examples:**
+```python
+summary = device.get_device_summary()
+print(f"Device: {summary['name']}")
+print(f"Has new data: {summary['has_new_data']}")
+print(f"Last update: {summary['last_update_time']}")
+```
+
+## supports_message_type
+```python
+def supports_message_type(self, message_type: str) -> bool:
+```
+Checks if this device supports the specified message type.
+
+**Parameters:**
+- `message_type` (str): Message type name (e.g., 'imu_data', 'gamepad_read')
+
+**Returns:**
+- `bool`: Whether this message type is supported
+
+**Examples:**
+```python
+if device.supports_message_type('imu_data'):
+    # Process IMU data
+    process_imu_data(device)
+```
+
+## get_supported_message_types_static
+```python
+@classmethod
+def get_supported_message_types_static(cls) -> List[str]:
+```
+Static method to get supported message types without instantiation. This is an abstract method that must be implemented by subclasses.
+
+**Returns:**
+- `List[str]`: List of supported message type names
+
+**Examples:**
+```python
+# Get supported message types for a device class
+supported_types = MyOptionalDevice.get_supported_message_types_static()
+print(f"Supported types: {supported_types}")
 ```
