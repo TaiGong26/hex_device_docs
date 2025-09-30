@@ -48,7 +48,6 @@ hand.command_timeout_check(False)
 ```
 
 ## construct_mit_command
-**Warning: The hands just supports position command now, so other params will be filter now**
 ```python
 def construct_mit_command(self, pos: Union[np.ndarray, List[float]], speed: Union[np.ndarray, List[float]], torque: Union[np.ndarray, List[float]], kp: Union[np.ndarray, List[float]], kd: Union[np.ndarray, List[float]]) -> List[MitMotorCommand]:
 ```
@@ -107,7 +106,7 @@ hand.motor_command(CommandType.POSITION, positions)
 ```python
 def set_positon_step(self, step: float):
 ```
-Set position step for smooth position control.
+Set position step for smooth position control, only affects the Position mode.
 
 **Parameters:**
 - `step` (float): Position step size (rad)
