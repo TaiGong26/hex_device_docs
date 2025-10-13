@@ -40,9 +40,12 @@ Please checkout the [test/main.py](https://github.com/hexfellow/hex_device_pytho
 ## 🎯 Supported Device Types
 
 Currently supports the following robot types:
+- **RtTripleOmniWheelLRDriver**: Triple omni wheel vehicle
 - **RtCustomPcwVehicle**: Custom PCW vehicle
 - **RtPcwVehicle**: PCW vehicle
+- **RtArk2LrDriver**: Ark2 vehicle
 - **RtArmArcherD6Y**: Archer robotic arm
+- **HtGp100**: HtGp100 hands
 
 ## 🤝 Getting Help
 
