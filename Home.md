@@ -10,34 +10,7 @@ Please refer to our [Installation Guide](Installation-Guide) for detailed instal
 
 ### Basic Usage
 
-```python
-from hex_device import HexDeviceApi
-
-# Create API instance
-api = HexDeviceApi(ws_url="ws://192.168.1.1:8439", control_hz=250)
-
-try:
-    # Get device list
-    for device in api.device_list:
-        if isinstance(device, ChassisMaver):
-            # Enable chassis
-            device.enable()
-            # Set vehicle speed
-            device.set_vehicle_speed(1.0, 0.0, 0.0)
-        
-    # Main loop
-    while not api.is_api_exit():
-        # Process device data
-        for device in api.device_list:
-            if device.has_new_data():
-                # Handle new data
-                pass
-                
-except KeyboardInterrupt:
-    print("Received Ctrl-C.")
-finally:
-    api.close()
-```
+Please checkout the [test/main.py](https://github.com/hexfellow/hex_device_python/blob/main/tests/main.py)
 
 ## 🔧 Main Features
 
@@ -48,7 +21,7 @@ finally:
 - **Status Monitoring**: Real-time monitoring of device status, battery information, warning messages, etc.
 
 ### Chassis Control
-- **ChassisMaver**: Supports chassis control for PCW vehicles and custom PCW vehicles
+- **Chassis**: Supports chassis control for multiple robot types (Mark2, Maver, PCW vehicles, etc.)
 - **Speed Control**: Supports XYZ three-axis speed control, suitable for omnidirectional mobile platforms
 - **Motor Control**: Direct motor-level control
 - **Odometry**: Built-in odometry functionality providing position and velocity feedback
@@ -62,6 +35,7 @@ finally:
 
 - **[Installation Guide](Installation-Guide)** - Detailed installation steps and environment configuration
 - **[Function Details](API-List)** - Complete API function documentation
+- **[Change Log](Change-Log)** - Record the modifications and development plans of each version
 
 ## 🎯 Supported Device Types
 
