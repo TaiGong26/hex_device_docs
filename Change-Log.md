@@ -15,3 +15,6 @@ ChassisMaver and ChassisMark2 were merge to the same class - chassis.
 
 ## 1.1.6
 Chassis add start & stop func, it means that the chassis must explicitly call the start() function to respond to commands, and it can safely exit control by calling the stop() function.
+
+## 1.2.6
+Rename arm class and test ArmSaber finished.

@@ -4,10 +4,6 @@ Supported robot types:
 - `RtArmArcherD6Y`: Archer 6-DOF robotic arm (ID: 16)
 - `RtArmSaberD6X`: Saber 6-DOF robotic arm (ID: 14)  
 - `RtArmSaberD7X`: Saber 7-DOF robotic arm (ID: 15)
-- `RtArmSaber750d3Lr3DmDriver`: Saber 750d3 series (ID: 9)
-- `RtArmSaber750d4Lr3DmDriver`: Saber 750d4 series (ID: 10)
-- `RtArmSaber750h3Lr3DmDriver`: Saber 750h3 series (ID: 11)
-- `RtArmSaber750h4Lr3DmDriver`: Saber 750h4 series (ID: 12)
 
 # ArmArcher
 ```python
