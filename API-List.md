@@ -12,7 +12,7 @@
 **[Chassis](API-Chassis)**  
 
 # Robotic Arm
-**[ArmArcher](API-ArmArcher)**  
+**[Arm](API-Arm)**  
 
 # Hands
 **[Hands](API-Hands)**  

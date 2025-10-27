@@ -28,9 +28,9 @@ Returns a read-only device list containing all HEX series device class instances
 Examples:
 ```python
 for device in api.device_list:
-    if isinstance(device, ChassisMaver):
+    if isinstance(device, Chassis):
         pass
-    elif isinstance(device, ArmArcher):
+    elif isinstance(device, Arm):
         pass
 ```
 

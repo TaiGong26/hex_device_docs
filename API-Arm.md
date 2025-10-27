@@ -1,25 +1,49 @@
-The `ArmArcher` class inherits from [DeviceBase](Function-common#devicebase) and [MotorBase](Function-common#motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+The `Arm` class inherits from [DeviceBase](Function-common#devicebase) and [MotorBase](Function-common#motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
 Supported robot types:
 - `RtArmArcherD6Y`: Archer 6-DOF robotic arm (ID: 16)
 - `RtArmSaberD6X`: Saber 6-DOF robotic arm (ID: 14)  
-- `RtArmSaberD7X`: Saber 7-DOF robotic arm (ID: 15)
 
-# ArmArcher
+# Arm
 ```python
-class ArmArcher(DeviceBase, MotorBase):
+class Arm(DeviceBase, MotorBase):
 ```
 
 ## `__init__`
 ```python
 def __init__(self, robot_type, motor_count, name: str = "ArmArcher", control_hz: int = 500, send_message_callback=None):
 ```
-Automatically called by HexDeviceApi to initialize the ArmArcher robotic arm device.
+Automatically called by HexDeviceApi to initialize the Arm robotic arm device.
 
 Examples:
 ```python
 # Usually called internally by HexDeviceApi
-arm = ArmArcher(robot_type=16, motor_count=6, name="MyArm", control_hz=500)
+arm = Arm(robot_type=16, motor_count=6, name="MyArm", control_hz=500)
+```
+
+## `start`
+```python
+def start(self):
+```
+Sends initialization command and sets `api_control_initialized` to `True`. The robotic arm will only start responding to control commands after calling this function.  
+**Note:** If there is already a controller, this command will be ignored by the robotic arm until control is released.
+
+```python
+api = HexDeviceApi(ws_url=args.url, control_hz=250)
+arm = api.find_device_by_robot_type(16)
+arm.start()
+```
+
+## `stop`
+```python
+def stop(self):
+```
+Sends stop command and sets `api_control_initialized` to `False`. After calling this function, the robotic arm will enter Disable mode and stop connection monitoring and command listening. This is the correct way to disconnect. If you exit the program directly without calling stop, the robotic arm will enter a connection timeout error state.
+
+```python
+api = HexDeviceApi(ws_url=args.url, control_hz=250)
+arm = api.find_device_by_robot_type(16)
+arm.stop()
 ```
 
 ## command_timeout_check
@@ -71,6 +95,31 @@ stop_detail = arm.get_parking_stop_detail()
 if stop_detail.category != public_api_types_pb2.ParkingStopCategory.PscNone:
     print(f"Emergency stop reason: {stop_detail.reason}")
     print(f"Category: {stop_detail.category}")
+```
+
+## get_session_holder
+```python
+def get_session_holder(self) -> int:
+```
+Gets the session ID of the current controller. Returns 0 when no one is controlling the robotic arm.
+
+Examples:
+```python
+id = arm.get_arm_config()
+if id == 0:
+    print(f"No one is controlling, you can use start() to try to get control")
+```
+
+## get_my_session_id
+```python
+def get_my_session_id(self) -> int:
+```
+Gets the session ID of the current connection.
+
+Examples:
+```python
+id = arm.get_my_session_id()
+print(f"My session id is {id}")
 ```
 
 ## Configuration Methods

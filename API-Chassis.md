@@ -3,7 +3,7 @@ The `Chassis` class inherits from [DeviceBase](API-Common#devicebase) and [Motor
 Supported robot types:
 - `RtArk2LrDriver`: Chassis Mark2 (2 motors)
 - `RtCustomPcwVehicle`: Custom PCW vehicle (8 motors)
-- `RtPcwVehicle`: PCW vehicle (8 motors)
+- `RtMaverX4`: Maver vehicle (8 motors)
 - `RtTripleOmniWheelLRDriver`: Triple Omni Wheel LR Driver
 
 # Chassis
@@ -43,7 +43,8 @@ chassis_maver = Chassis(
 ```python
 def start(self):
 ```
-Starts the chassis control, enabling API control initialization.
+Sends initialization command and sets `api_control_initialized` to `True`. The chassis will only start responding to control commands after calling this function.  
+**Note:** If there is already a controller, this command will be ignored by the chassis until control is released.
 
 Examples:
 ```python
@@ -55,7 +56,7 @@ print("Chassis control started")
 ```python
 def stop(self):
 ```
-Stops the chassis control, disabling API control.
+Sends stop command and sets `api_control_initialized` to `False`. After calling this function, the chassis will enter Disable mode and stop connection monitoring and command listening. This is the correct way to disconnect. If you exit the program directly without calling stop, the robotic arm will enter a connection timeout error state.
 
 Examples:
 ```python
@@ -165,6 +166,42 @@ warning = chassis.get_warning()
 if warning is not None:
     warning_name = public_api_types_pb2.WarningCategory.Name(warning)
     print(f"Warning: {warning_name}")
+```
+
+## get_session_holder
+```python
+def get_session_holder(self) -> int:
+```
+Gets the session ID of the current controller. Returns 0 when no one is controlling the robotic arm.
+
+Examples:
+```python
+id = chassis.get_arm_config()
+if id == 0:
+    print(f"No one is controlling, you can use start() to try to get control")
+```
+
+## get_my_session_id
+```python
+def get_my_session_id(self) -> int:
+```
+Gets the session ID of the current connection.
+
+Examples:
+```python
+id = chassis.get_my_session_id()
+print(f"My session id is {id}")
+```
+
+## clear_parking_stop
+```python
+def clear_parking_stop(self):
+```
+Try to clear parking stop.The error can only be cleared in part.
+
+Examples:
+```python
+chassis.clear_parking_stop()
 ```
 
 ## enable
