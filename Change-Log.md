@@ -32,3 +32,8 @@ Rename arm class and test ArmSaber finished.
 - Added mode switching for robotic arm - now supports xview for mode switching
 - Robotic arm commands are divided into two types: ArmExclusiveCommand and ArmSharedCommand. Control commands are ArmExclusiveCommand and only respond to control commands from the current session holder
 - **For chassis:** Users currently using software packages version 1.1.6 or higher can directly upgrade to this version.
+
+## 1.3.1
+- Added protocol version validation; the API now logs errors when the connected firmware version is unsupported.
+- Optional devices have been moved to the `SecondaryDevice` flow, each assigned a device ID so multiple devices of the same type can be distinguished.
+- Added KCP transport support, providing lower communication latency and faster recovery from packet loss.

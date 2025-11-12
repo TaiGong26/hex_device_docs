@@ -8,14 +8,20 @@
 
 ## `__init__`
 ```python
-def __init__(self, ws_url: str, control_hz: int = 500)
+def __init__(self, ws_url: str, control_hz: int = 500, enable_kcp: bool = True, local_port: int = None):
 ```
-Creates a WebSocket connection based on the provided ws_url and executes asynchronous threads at control_hz frequency to handle data interaction with all hardware devices.
+Creates the main HexDevice API runtime, validates the WebSocket endpoint, and launches the internal asyncio worker thread that manages device discovery and message dispatch.
+
+Parameters:
+- `ws_url`: WebSocket URL of the HexDevice server. Raises an `InvalidWSURLException` if the value is not supported.
+- `control_hz`: Frequency (Hz) for internal scheduling when processing device tasks. Defaults to 500 Hz.
+- `enable_kcp`: Enables the accelerated KCP transport channel when available. When `True`, the API will negotiate the UDP tunnel, otherwise all traffic stays on the base WebSocket connection.
+- `local_port`: Explicit local UDP port for the KCP client. Use `None` to let the OS pick a free port automatically.
 
 Examples:
 ```python
 from hex_device import HexDeviceApi
-api = HexDeviceApi(ws_url="ws://192.168.1.1:8439", control_hz=250)
+api = HexDeviceApi(ws_url=args.url, control_hz=250, enable_kcp=True, local_port=52323)
 ```
 
 ## device_list
@@ -34,6 +40,19 @@ for device in api.device_list:
         pass
 ```
 
+## optional_device_list
+```python
+@property
+def optional_device_list(self):
+```
+Returns a read-only view of the optional device instances that were dynamically attached to registered primary devices (for example Hands peripherals). The list blocks all mutating methods so the SDK can keep ownership of lifecycle management.
+
+Examples:
+```python
+for optional in api.optional_device_list:
+    print(optional.device_id, optional.device_type)
+```
+
 ## find_device_by_robot_type
 ```python
 def find_device_by_robot_type(self, robot_type) -> Optional[DeviceBase]
@@ -46,11 +65,20 @@ Examples:
 archer = api.find_device_by_robot_type(16)
 ```
 
+## find_optional_device_by_id
+```python
+def find_optional_device_by_id(self, device_id: int) -> Optional[OptionalDeviceBase]:
+```
+Retrieves an optional device (secondary device) by the `device_id` reported in `SecondaryDeviceStatus`. Returns `None` if the device has not been discovered or removed.
+
 ## get_device_task_status
 ```python
 def get_device_task_status(self) -> Dict[str, Any]:
 ```
-Gets the status information of currently running devices.
+Gets a high-level snapshot of the internal task scheduler. The returned dictionary contains:
+- `total_devices`: Number of devices currently tracked.
+- `active_tasks`: Total count of periodic tasks still running.
+- `device_tasks`: Mapping keyed by device name with `device_id`, `device_type`, `robot_type`, and task state flags (`task_done`, `task_cancelled`).
 
 ## close
 ```python
@@ -88,7 +116,7 @@ finally:
 ```python
 def get_raw_data(self) -> Tuple[public_api_up_pb2.APIUp, int]:
 ```
-Gets the raw APIUP message. The function returns the earliest APIUp data in the queue and the current queue length. `raw_data` is an array of length 50. As long as raw data is obtained and parsed at a sufficient running frequency, zero-distortion real-time data can be achieved.  
+Returns a tuple of the oldest buffered `APIUp` protobuf message and the remaining queue length. Internally the API maintains a sliding window buffer (maximum length `RAW_DATA_LEN`, equal to 50 frames). By consuming the queue frequently you can reconstruct a lossless real-time stream; helper routines such as `_parse_wheel_data` can be used to decode the payload.
 Examples:
 ```python
 while not api.is_api_exit():
@@ -576,14 +604,15 @@ if status['error_code'] is not None:
 
 ## `__init__`
 ```python
-def __init__(self, read_only: bool, name: str = "", send_message_callback=None):
+def __init__(self, read_only: bool, name: str = "", send_message_callback=None, device_id: int = None):
 ```
-Initializes an optional device base class. These devices are matched by message type rather than robot_type and are used for processing optional fields in APIUp messages.
+Initializes an optional device base class. These devices are matched by `device_id` (from `SecondaryDeviceStatus`) rather than `robot_type` and are used for processing optional fields in APIUp messages.
 
 **Parameters:**
 - `read_only` (bool): Whether the device is read-only
 - `name` (str, optional): Device name, defaults to "OptionalDevice"
 - `send_message_callback` (callable, optional): Callback function for sending messages
+- `device_id` (int, optional): Unique identifier assigned from secondary device discovery
 
 **Examples:**
 ```python
@@ -640,7 +669,7 @@ if device.has_new_data():
 ```python
 def get_device_summary(self) -> Dict[str, Any]:
 ```
-Gets the device status summary including name, data status, and last update time.
+Gets the device status summary including name, assigned device ID, data status, and last update time (in nanoseconds).
 
 **Returns:**
 - `Dict[str, Any]`: Dictionary containing device status information
@@ -649,42 +678,7 @@ Gets the device status summary including name, data status, and last update time
 ```python
 summary = device.get_device_summary()
 print(f"Device: {summary['name']}")
+print(f"Device ID: {summary['device_id']}")
 print(f"Has new data: {summary['has_new_data']}")
 print(f"Last update: {summary['last_update_time']}")
-```
-
-## supports_message_type
-```python
-def supports_message_type(self, message_type: str) -> bool:
-```
-Checks if this device supports the specified message type.
-
-**Parameters:**
-- `message_type` (str): Message type name (e.g., 'imu_data', 'gamepad_read')
-
-**Returns:**
-- `bool`: Whether this message type is supported
-
-**Examples:**
-```python
-if device.supports_message_type('imu_data'):
-    # Process IMU data
-    process_imu_data(device)
-```
-
-## get_supported_message_types_static
-```python
-@classmethod
-def get_supported_message_types_static(cls) -> List[str]:
-```
-Static method to get supported message types without instantiation. This is an abstract method that must be implemented by subclasses.
-
-**Returns:**
-- `List[str]`: List of supported message type names
-
-**Examples:**
-```python
-# Get supported message types for a device class
-supported_types = MyOptionalDevice.get_supported_message_types_static()
-print(f"Supported types: {supported_types}")
 ```
