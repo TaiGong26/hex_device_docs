@@ -284,6 +284,17 @@ ppr = motor.pulse_per_rotation
 print(f"Pulses per rotation: {ppr}")
 ```
 
+## encoder_positions
+```python
+@property
+def encoder_positions(self) -> np.ndarray:
+```
+Get all motor encoder positions.  
+Examples:
+```python
+print(f"Encoders: {motor.pulse_per_rotation}")
+```
+
 ## wheel_radius
 ```python
 @property
@@ -398,6 +409,16 @@ Examples:
 positions = motor.get_motor_positions()
 for i, pos in enumerate(positions):
     print(f"Motor {i}: {pos} rad")
+```
+
+## get_encoders_to_zero
+```python
+def get_encoders_to_zero(self) -> List[float]:
+```
+Retrieve the encoder values from the current position to the zero point, which can be used to check the difference between the current position and the software's zero position. Note that this value is only meaningful for the robotic arm.  
+Examples:
+```python
+encoders_bias = device.get_encoders_to_zero()
 ```
 
 ## get_motor_velocity

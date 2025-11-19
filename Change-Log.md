@@ -37,3 +37,9 @@ Rename arm class and test ArmSaber finished.
 - Added protocol version validation; the API now logs errors when the connected firmware version is unsupported.
 - Optional devices have been moved to the `SecondaryDevice` flow, each assigned a device ID so multiple devices of the same type can be distinguished.
 - Added KCP transport support, providing lower communication latency and faster recovery from packet loss.
+
+## 1.3.2
+- Add support for the Saber 7-DOF arm, but note that MIT mode is not enabled by default.
+- Fix incorrect references to chassis variables.
+- Add function to retrieve the raw encoder values for the arm.
+- Add function to check timeout for chassis.

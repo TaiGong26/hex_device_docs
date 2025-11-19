@@ -268,6 +268,16 @@ chassis.set_vehicle_speed(0.0, 0.0, 0.5)
 chassis.set_vehicle_speed(0.0, 0.0, 0.0)
 ```
 
+## is_timeout
+```python
+def is_timeout(self) -> bool:
+```
+When a command times out, the chassis will automatically lock its speed at 0. You can use this function to check whether the command has timed out.  
+```python
+if chassis.is_timeout():
+    print("timeout!!")
+```
+
 ## get_status_summary
 ```python
 def get_status_summary(self) -> Dict[str, Any]:
