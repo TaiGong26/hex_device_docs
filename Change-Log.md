@@ -43,3 +43,19 @@ Rename arm class and test ArmSaber finished.
 - Fix incorrect references to chassis variables.
 - Add function to retrieve the raw encoder values for the arm.
 - Add function to check timeout for chassis.
+
+## 1.3.3
+- Add is_timeout() for chassis.
+- Add get_encoders_to_zero() for arm.
+- Add torque control limit to saber.
+- Add linear lift support.
+
+## 1.3.4
+- Use deque to buff motor data.
+- Fix logger handler error.
+
+## 1.3.5
+- Remove clear_new_data_flag(), has_new_data() checks for new data based on the queue length now.
+- Change the name of arm type.
+- Implemented PTP time synchronization.
+- Improve the program's exit process.

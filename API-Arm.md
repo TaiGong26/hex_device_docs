@@ -1,13 +1,17 @@
-The `Arm` class inherits from [DeviceBase](Function-common#devicebase) and [MotorBase](Function-common#motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+The `Arm` class inherits from [DeviceBase](API-common#Devicebase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
 Supported robot types:
-- `RtArmArcherD6Y`: Archer 6-DOF robotic arm (ID: 16)
-- `RtArmSaberD6X`: Saber 6-DOF robotic arm (ID: 14)  
+- `RtArmSaberD6X`: Saber 6-DOF robotic arm (ID: 14)
+- `RtArmSaberD6X`: Saber 7-DOF robotic arm (ID: 15)
+- `RtArmArcherY6D_V1`: Archer 6-DOF robotic arm (ID: 16)
+- `RtArmArcherY6L_V1`: Archer 6-DOF robotic arm (ID: 17)
 
 # Arm
 ```python
 class Arm(DeviceBase, MotorBase):
 ```
+
+The common function can be found in: [DeviceBase](API-Common#Devicebase) and [MotorBase](API-Motorbase).
 
 ## `__init__`
 ```python
@@ -81,6 +85,45 @@ arm.motor_command(CommandType.BRAKE, [True] * 6)
 
 # Set torque commands
 arm.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.2, 0.1, 0.1, 0.0])
+```
+
+## construct_mit_command
+```python
+def construct_mit_command(self, 
+            pos: Union[np.ndarray, List[float]], 
+            speed: Union[np.ndarray, List[float]], 
+            torque: Union[np.ndarray, List[float]], 
+            kp: Union[np.ndarray, List[float]], 
+            kd: Union[np.ndarray, List[float]]
+        ) -> List[MitMotorCommand]:
+```
+Construct MIT command from numpy array.
+Examples:
+```python
+mit_commands = device.construct_mit_command(
+    np.array([-0.3, -1.48, 2.86, 0.0, 0.0, 0.0]), 
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), 
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), 
+    np.array([150.0, 150.0, 150.0, 150.0, 39.0, 39.0]), 
+    np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
+)
+mit_commands = device.construct_mit_command(
+    [0.3, -1.48, 2.86, 0.0, 0.0, 0.0], 
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+    [150.0, 150.0, 150.0, 150.0, 39.0, 39.0], 
+    [12.0, 12.0, 12.0, 12.0, 0.8, 0.8]
+)
+```
+
+## clear_parking_stop
+```python
+def clear_parking_stop(self):
+```
+Clear the parking stop can be clear remotely.
+Examples:
+```python
+device.clear_parking_stop()
 ```
 
 ## get_parking_stop_detail

@@ -198,7 +198,6 @@ The `Hands` class inherits all methods from `OptionalDeviceBase` and `MotorBase`
 
 ### From OptionalDeviceBase:
 - `has_new_data()` - Check for new data
-- `clear_new_data_flag()` - Clear new data flag
 - `get_device_summary()` - Get device status
 - `supports_message_type()` - Check message type support
 
@@ -224,9 +223,6 @@ if hand.has_new_data():
     # Process hand data
     process_hand_data(positions, velocities, torques)
     
-    # Clear data flag
-    hand.clear_new_data_flag()
-
 # Check individual motor status
 for i in range(hand.motor_count):
     state = hand.get_motor_state(i)

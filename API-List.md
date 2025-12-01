@@ -5,7 +5,7 @@
 
 # Common Interfaces
 **[HexDeviceApi](API-Common)**  
-**[DeviceBase](API-Common#devicebase)**  
+**[DeviceBase](API-Common#Devicebase)**  
 **[MotorBase](API-Common#motorbase)**  
 
 # Chassis
@@ -16,3 +16,6 @@
 
 # Hands
 **[Hands](API-Hands)**  
+
+# Lifts
+**[Linear](API-Linear)**

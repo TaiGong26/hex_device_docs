@@ -1,4 +1,4 @@
-The `Chassis` class inherits from [DeviceBase](API-Common#devicebase) and [MotorBase](API-Common#motorbase), primarily implementing the mapping to `BaseStatus`. This class corresponds to `BaseStatus` in the proto, managing chassis status and motor control.
+The `Chassis` class inherits from [DeviceBase](API-Common#Devicebase) and [MotorBase](API-Common#Motorbase), primarily implementing the mapping to `BaseStatus`. This class corresponds to `BaseStatus` in the proto, managing chassis status and motor control.
 
 Supported robot types:
 - `RtArk2LrDriver`: Chassis Mark2 (2 motors)
@@ -10,6 +10,8 @@ Supported robot types:
 ```python
 class Chassis(DeviceBase, MotorBase):
 ```
+
+The common function can be found in: [DeviceBase](API-Common#Devicebase) and [MotorBase](API-Motorbase).
 
 ## `__init__`
 ```python
