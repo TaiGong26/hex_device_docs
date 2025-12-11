@@ -59,3 +59,11 @@ Rename arm class and test ArmSaber finished.
 - Change the name of arm type.
 - Implemented PTP time synchronization.
 - Improve the program's exit process.
+
+## 1.3.6 (2025.12.11)
+Fix:
+- Fixed the issue of unexpected reduction in the data queue caused by incorrect internal variable references.
+- Fixed the issue where the control frequency was not passed down properly.
+
+Feat:
+- IPv6 connectivity is now supported.
