@@ -67,3 +67,13 @@ Fix:
 
 Feat:
 - IPv6 connectivity is now supported.
+
+## 1.3.7 (2025.12.12)
+Fix：
+- Fix IPv4 interface crash.
+
+## 1.3.8 (2025.12.12)
+Fix:
+- Sync chassis simple data deque & motor data deque.
+Feat:
+- Add imu & gamepad support.

@@ -19,3 +19,7 @@
 
 # Lifts
 **[Linear](API-Linear)**
+
+# Others
+**[Imu](API-Imu.md)**  
+**[Gamepad](API-Gamepad.md)**
