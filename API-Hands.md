@@ -2,6 +2,7 @@ The `Hands` class inherits from [OptionalDeviceBase](API-Common#optionaldeviceba
 
 Supported hand types:
 - `HtGp100`: GP100 hand type
+- `SdtHandGp80G1` Gp80 hand type
 
 ## `__init__`
 ```python

@@ -15,11 +15,13 @@
 **[Arm](API-Arm)**  
 
 # Hands
-**[Hands](API-Hands)**  
+**[Hands](API-Hands)**
+**[SdtHello](API-Sdthello)**
 
 # Lifts
 **[Linear](API-Linear)**
+**[Zeta](API-Zeta)**
 
 # Others
-**[Imu](API-Imu.md)**  
+**[Imu](API-Imu.md)**
 **[Gamepad](API-Gamepad.md)**

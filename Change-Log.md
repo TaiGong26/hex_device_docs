@@ -77,3 +77,34 @@ Fix:
 - Sync chassis simple data deque & motor data deque.
 Feat:
 - Add imu & gamepad support.
+
+## 1.3.9 (2025.12.17)
+Feat:
+- Now the ReportFrequency will follow the control hz from api init.
+
+## 1.3.10 (2025.12.23)
+Feat:
+- Add support for RtArmArcherY6_H1.
+
+## 1.3.11 (2025.12.23)
+Fix:
+- Add joint limits params for RtArmArcherY6_H1.
+
+## 1.3.12 (2025.12.24)
+Fix:
+- Ipv6 address parse error on kcp.
+- Argparse lib raise when use python3.14
+
+## 1.3.13 (2025.12.27)
+Fix:
+- Hands's position calc error.
+
+## 1.3.14 (2026.1.23)
+Refactor:
+- Rename RtLotaP1 to RtIotaP1.
+Feat:
+- Add support for archer_y6_h1.
+- Add support for SdtHandGp80G1.
+- Add support for ZetaLift.
+- Add support for Hello.
+- Add proto version & Add hex_device version log.
