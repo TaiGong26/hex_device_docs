@@ -48,35 +48,6 @@ hand.command_timeout_check(True)
 hand.command_timeout_check(False)
 ```
 
-## construct_mit_command
-```python
-def construct_mit_command(self, pos: Union[np.ndarray, List[float]], speed: Union[np.ndarray, List[float]], torque: Union[np.ndarray, List[float]], kp: Union[np.ndarray, List[float]], kd: Union[np.ndarray, List[float]]) -> List[MitMotorCommand]:
-```
-Construct MIT motor commands for the hand.
-
-**Parameters:**
-- `pos`: Position commands (rad)
-- `speed`: Speed commands (rad/s)
-- `torque`: Torque commands (Nm)
-- `kp`: Position gain
-- `kd`: Velocity gain
-
-**Returns:**
-- `List[MitMotorCommand]`: List of MIT motor commands
-
-**Examples:**
-```python
-# Create MIT commands for 6-DOF hand
-pos = [0.0]
-speed = [0.1]
-torque = [1.0]
-kp = [10.0]
-kd = [1.0]
-
-mit_commands = hand.construct_mit_command(pos, speed, torque, kp, kd)
-hand.motor_command(CommandType.MIT, mit_commands)
-```
-
 ## motor_command
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
@@ -211,6 +182,7 @@ The `Hands` class inherits all methods from `OptionalDeviceBase` and `MotorBase`
 - `get_motor_torques()` - Get all motor torques
 - `get_motor_state(motor_index)` - Get motor state
 - `get_motor_summary()` - Get motor group summary
+- `construct_mit_command()` - Constructs MIT command from numpy array or list
 
 **Examples:**
 ```python

@@ -99,7 +99,11 @@ Fix:
 Fix:
 - Hands's position calc error.
 
-## 1.3.14 (2026.1.23)
+## 1.3.14 (2026.1.9)
+Fix:
+- Fix missing configuration for firefly_y6_h1 config.
+
+## 1.3.15 (2026.1.23)
 Refactor:
 - Rename RtLotaP1 to RtIotaP1.
 
@@ -109,3 +113,19 @@ Feat:
 - Add support for ZetaLift.
 - Add support for Hello.
 - Add proto version & Add hex_device version log.
+
+## 1.3.16 (2026.2.2)
+Feat:
+- The set_rgb_stripe_command function no longer raises an error when the number of parameters does not match. Instead, it automatically fills in missing parameters with zeros and imposes range restrictions on the input parameters. 
+- The MotorBase class has been enhanced with the method construct_mit_command.
+
+Refactor:
+- SdtHello has been updated to inherit from the MotorBase class to unify the interface (functionality not implemented).
+
+## 1.3.17 (2026.2.3)
+Feat:
+- Currently, the logs will print the IP address and port number of the API's current connection target.
+- Add parsing for the warning field in the MotorStatus structure.
+
+Refactor：
+- Change to directly report the error code when there is a motor error, instead of just indicating that an error has occurred.

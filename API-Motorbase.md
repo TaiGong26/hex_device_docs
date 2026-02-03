@@ -369,6 +369,55 @@ mit_cmds = [
 motor.mit_motor_command(mit_cmds)
 ```
 
+## construct_mit_command
+```python
+def construct_mit_command(self, 
+            pos: Union[np.ndarray, List[float]], 
+            speed: Union[np.ndarray, List[float]], 
+            torque: Union[np.ndarray, List[float]], 
+            kp: Union[np.ndarray, List[float]], 
+            kd: Union[np.ndarray, List[float]]
+        ) -> List[MitMotorCommand]:
+```
+Constructs MIT command from numpy array or list. MIT commands allow simultaneous control of position, speed, torque with PID gains.
+
+**Parameters:**
+- `pos` (Union[np.ndarray, List[float]]): Target positions for each joint (rad)
+- `speed` (Union[np.ndarray, List[float]]): Target speeds for each joint (rad/s)
+- `torque` (Union[np.ndarray, List[float]]): Target torques for each joint (Nm)
+- `kp` (Union[np.ndarray, List[float]]): Proportional gains for each joint
+- `kd` (Union[np.ndarray, List[float]]): Derivative gains for each joint
+
+**Returns:**
+- `List[MitMotorCommand]`: List of MIT motor commands
+
+**Examples:**
+```python
+import numpy as np
+
+# Using numpy arrays
+mit_commands = motors.construct_mit_command(
+    np.array([-0.3, -1.48, 2.86, 0.0, 0.0, 0.0]), 
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), 
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), 
+    np.array([150.0, 150.0, 150.0, 150.0, 39.0, 39.0]), 
+    np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
+)
+
+# Using lists
+mit_commands = motors.construct_mit_command(
+    [0.3, -1.48, 2.86, 0.0, 0.0, 0.0], 
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+    [150.0, 150.0, 150.0, 150.0, 39.0, 39.0], 
+    [12.0, 12.0, 12.0, 12.0, 0.8, 0.8]
+)
+
+# Use with motor_command
+motors.motor_command(CommandType.MIT, mit_commands)
+```
+
+
 ## update_motor_data
 ```python
 def update_motor_data(self, positions: List[float], velocities: List[float], torques: List[float], driver_temperature: List[float], motor_temperature: List[float], voltage: List[float], pulse_per_rotation: Optional[List[float]] = None, wheel_radius: Optional[List[float]] = None, error_codes: Optional[List[Optional[int]]] = None, current_targets: Optional[List[public_api_types_pb2.SingleMotorTarget]] = None):
