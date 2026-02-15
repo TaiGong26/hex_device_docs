@@ -129,3 +129,8 @@ Feat:
 
 Refactor：
 - Change to directly report the error code when there is a motor error, instead of just indicating that an error has occurred.
+
+## 1.3.18 (2026.2.15)
+Refactor:
+- Change joint limits for archer_y6、hello_y6、firefly_y6、hello_firefly_y6.
+- Invalid websocket url will exit directly now.
