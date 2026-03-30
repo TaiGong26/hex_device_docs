@@ -134,3 +134,39 @@ Refactor：
 Refactor:
 - Change joint limits for archer_y6、hello_y6、firefly_y6、hello_firefly_y6.
 - Invalid websocket url will exit directly now.
+
+## 1.3.19 (2026.3.25)
+**For Arm:**
+Fix:
+- Fix the incorrect setting of timeout check status.
+- Fix Position mode check escape vulnerability.
+
+## 1.3.20 (2026.3.25)
+**For Lift**
+Fix:
+- Fix log_err when emergency stop is None.
+**For chassis**
+Refactor:
+- Change log level when is not the session holder.
+
+## 1.4.0 (2026.3.1)
+**For Arm**
+Feat:
+- Some special control mode is support.
+**For MotorBase**
+Refactor:
+- warning!!! The unit of mit's position is change to rad.
+- This version not support 1.3 hardware version.
+
+## 1.4.1 (2026.3.16)
+**For Api**
+Feat:
+- Add stream mode support with callback for data handling.
+- Add export for proto message types.
+**For Arm**
+Feat:
+- Add func is_timeout.
+- Merge 1.3.19 version commit.
+**For Hands**
+Feat:
+- Add Gr100 support.
