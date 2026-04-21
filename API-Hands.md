@@ -1,9 +1,43 @@
+# Hands API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Control Methods](#control-methods)
+   - [command_timeout_check](#command_timeout_check)
+   - [motor_command](#motor_command)
+   - [set_positon_step](#set_positon_step)
+   - [set_pos_torque](#set_pos_torque)
+5. [Configuration Methods](#configuration-methods)
+   - [get_hand_type](#get_hand_type)
+   - [get_joint_limits](#get_joint_limits)
+6. [Summary Methods](#summary-methods)
+   - [get_hands_summary](#get_hands_summary)
+7. [Inherited Methods](#inherited-methods)
+8. [Best Practices](#best-practices)
+9. [Troubleshooting](#troubleshooting)
+
+## Overview
+
 The `Hands` class inherits from [OptionalDeviceBase](API-Common#optionaldevicebase) and [MotorBase](API-Common#motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
 - `SdtHandGp100`: GP100 hand type
 - `SdtHandGp80G1`: GP80G1 hand type
 - `SdtHandGr100`: GR100 hand type
+
+## Class Definition
+```python
+class Hands(OptionalDeviceBase, MotorBase):
+```
 
 ## `__init__`
 ```python
@@ -62,6 +96,8 @@ Set motor command for the hand. Supports position limiting and MIT command conve
 
 **Examples:**
 ```python
+from hex_device.motor_base import CommandType
+
 # Position command with automatic limiting
 hand.motor_command(CommandType.POSITION, [0.0])
 
@@ -199,3 +235,60 @@ for i in range(hand.motor_count):
     if state == "error":
         print(f"Motor {i} has error")
 ```
+
+## Best Practices
+
+### General Recommendations
+
+1. **Use position commands for simple control**
+   - Position commands are automatically limited to hand joint limits
+   - This provides safer control for basic operations
+
+2. **Use appropriate step size for smooth control**
+   - Smaller steps provide smoother but slower movement
+   - Larger steps provide faster but less smooth movement
+
+3. **Monitor motor status**
+   - Check for error states regularly
+   - Handle error conditions gracefully
+
+4. **Use appropriate control frequency**
+   - The default 250Hz is suitable for most hand control applications
+
+### Performance Optimization
+
+1. **Batch commands when possible**
+   - Group multiple motor commands to reduce communication overhead
+
+2. **Use numpy arrays for large data sets**
+   - Numpy arrays are more efficient for processing
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+1. **Hand Not Responding**
+   - **Symptom**: Commands have no effect
+   - **Cause**: API control not initialized
+   - **Solution**: Ensure proper initialization and connection
+
+2. **Motor Error State**
+   - **Symptom**: Motor state returns "error"
+   - **Cause**: Various hardware issues
+   - **Solution**: Check motor connections and configuration
+
+3. **Position Command Not Working**
+   - **Symptom**: Position commands rejected
+   - **Cause**: Target position outside joint limits
+   - **Solution**: Check joint limits with `get_joint_limits()`
+
+### Debugging Tips
+
+1. **Enable verbose logging**
+   - Set logging level to DEBUG to see detailed communication
+
+2. **Monitor hand status**
+   - Regularly check `get_hands_summary()`
+
+3. **Test with simple commands**
+   - Start with basic position commands to verify functionality

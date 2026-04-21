@@ -1,3 +1,51 @@
+# Arm API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Supported Robot Types](#supported-robot-types)
+3. [Class Definition](#class-definition)
+4. [Initialization](#__init__)
+5. [Basic Control Methods](#basic-control-methods)
+   - [start](#start)
+   - [stop](#stop)
+   - [command_timeout_check](#command_timeout_check)
+   - [motor_command](#motor_command)
+   - [clear_parking_stop](#clear_parking_stop)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_session_holder](#get_session_holder)
+   - [get_my_session_id](#get_my_session_id)
+   - [enable_mit](#enable_mit)
+6. [Configuration Methods](#configuration-methods)
+   - [get_arm_config](#get_arm_config)
+   - [get_joint_limits](#get_joint_limits)
+   - [get_joint_names](#get_joint_names)
+   - [get_expected_motor_count](#get_expected_motor_count)
+   - [check_motor_count_match](#check_motor_count_match)
+   - [get_arm_series](#get_arm_series)
+   - [get_arm_name](#get_arm_name)
+7. [Advanced Control Methods](#advanced-control-methods)
+   - [end_effector_control](#end_effector_control)
+   - [joint_position_control](#joint_position_control)
+   - [enable_free_drag](#enable_free_drag)
+   - [compensated_mit_control](#compensated_mit_control)
+8. [Validation Methods](#validation-methods)
+   - [validate_joint_positions](#validate_joint_positions)
+   - [validate_joint_velocities](#validate_joint_velocities)
+9. [Configuration Management](#configuration-management)
+   - [reload_arm_config_from_dict](#reload_arm_config_from_dict)
+10. [Motion History Management](#motion-history-management)
+11. [Best Practices](#best-practices)
+12. [Troubleshooting](#troubleshooting)
+
+## Overview
+
 The `Arm` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
 ## Supported Robot Types
@@ -706,3 +754,84 @@ if arm is not None:
     # Stop device control
     arm.stop()
 ```
+
+## Best Practices
+
+### General Recommendations
+
+1. **Always call `stop()` before exiting**
+   - Failure to call `stop()` may cause the arm to enter a connection timeout error state
+   - This ensures proper disconnection and prevents potential issues on next connection
+
+2. **Use proper error handling**
+   - Implement try-except blocks around arm operations
+   - Handle timeouts and connection errors gracefully
+
+3. **Use automatic validation**
+   - Take advantage of automatic position and velocity validation
+   - This prevents sending invalid commands to the arm
+
+4. **Check session holder before starting**
+   - Use `get_session_holder()` to check if another controller is active
+   - Only call `start()` if no one else is controlling
+
+5. **Monitor parking stop status**
+   - Regularly check `get_parking_stop_detail()` to detect issues
+   - Clear remotely clearable stops when appropriate
+
+### Performance Optimization
+
+1. **Use appropriate control frequency**
+   - The default 500Hz is suitable for most applications
+   - Adjust based on your specific requirements
+
+2. **Batch commands when possible**
+   - Group multiple motor commands together to reduce communication overhead
+
+3. **Use MIT commands for precise control**
+   - MIT commands offer more precise control with PID gains
+   - Enable MIT mode with `enable_mit()` when needed
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+1. **Cannot Start Control**
+   - **Symptom**: `start()` has no effect
+   - **Cause**: Another controller is already active (`get_session_holder()` returns non-zero)
+   - **Solution**: Wait for the other controller to release control or restart the arm
+
+2. **Motor Count Mismatch**
+   - **Symptom**: `check_motor_count_match()` returns False
+   - **Cause**: Configured motor count differs from actual motor count
+   - **Solution**: Verify the robot type and check arm configuration
+
+3. **Parking Stop**
+   - **Symptom**: Arm stops unexpectedly
+   - **Cause**: Various safety conditions triggered
+   - **Solution**: Check `get_parking_stop_detail()` for the reason and clear if remotely clearable
+
+4. **Command Timeout**
+   - **Symptom**: Arm enters timeout state
+   - **Cause**: Commands not sent frequently enough
+   - **Solution**: Increase command sending frequency or adjust timeout settings with `command_timeout_check()`
+
+5. **Joint Limit Errors**
+   - **Symptom**: Position commands rejected
+   - **Cause**: Target position outside joint limits
+   - **Solution**: Use `validate_joint_positions()` before sending commands or `get_joint_limits()` to check limits
+
+### Debugging Tips
+
+1. **Enable verbose logging**
+   - Set logging level to DEBUG to see detailed communication
+
+2. **Monitor arm state**
+   - Regularly check `get_arm_config()` and `get_arm_series()`
+
+3. **Verify connection**
+   - Ensure WebSocket connection is stable
+   - Check for network interruptions
+
+4. **Test with simple commands**
+   - Start with basic position commands to verify functionality

@@ -1,9 +1,30 @@
+# Imu API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Data Methods](#data-methods)
+   - [get_imu_data](#get_imu_data)
+5. [Inherited Methods](#inherited-methods)
+6. [Best Practices](#best-practices)
+7. [Troubleshooting](#troubleshooting)
+
+## Overview
+
 The `Imu` class inherits from [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing IMU (Inertial Measurement Unit) data reading and status management. This class processes the optional `imu_data` field from APIUp messages.
 
 Supported device types:
 - `SdtImuY200`: IMU Y200 device type
 
-# Imu
+## Class Definition
 ```python
 class Imu(OptionalDeviceBase):
 ```
@@ -117,3 +138,54 @@ if imu is not None:
     print(f"Device name: {device_summary['name']}")
     print(f"Device ID: {device_summary['device_id']}")
 ```
+
+## Best Practices
+
+### General Recommendations
+
+1. **Check for None values**
+   - IMU data may contain None values if sensor is not initialized
+   - Always check for None before processing data
+
+2. **Use appropriate data retrieval frequency**
+   - IMU data is typically available at 250Hz
+   - Don't poll more frequently than necessary
+
+3. **Handle quaternion data properly**
+   - Quaternion is in [w, x, y, z] format
+   - Ensure proper normalization when converting to other representations
+
+### Data Processing Tips
+
+1. **Use filtering for noisy data**
+   - IMU data may contain noise
+   - Consider applying low-pass filters for smoothing
+
+2. **Convert units as needed**
+   - Acceleration is in m/s²
+   - Angular velocity is in rad/s
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+1. **IMU Data is None**
+   - **Symptom**: IMU data fields return None
+   - **Cause**: Sensor not initialized or communication issue
+   - **Solution**: Check device connection and initialization
+
+2. **No IMU Device Found**
+   - **Symptom**: `find_optional_device_by_id` or `find_optional_device_by_robot_type` returns None
+   - **Cause**: IMU device not connected or not registered
+   - **Solution**: Verify IMU device is properly connected and configured
+
+### Debugging Tips
+
+1. **Enable verbose logging**
+   - Set logging level to DEBUG to see detailed communication
+
+2. **Monitor device status**
+   - Regularly check `get_imu_summary()` for device health
+
+3. **Test with simple data retrieval**
+   - Start with basic `get_imu_data()` calls to verify functionality
