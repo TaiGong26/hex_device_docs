@@ -12,13 +12,14 @@ The common function can be found in: [OptionalDeviceBase](API-Common#OptionalDev
 
 ## `__init__`
 ```python
-def __init__(self, device_id, device_type, send_message_callback, name: str = "SdtHello", control_hz: int = 500, read_only: bool = False):
+def __init__(self, device_id, device_type, proto_version: tuple[int, int], send_message_callback, name: str = "SdtHello", control_hz: int = 500, read_only: bool = False):
 ```
 Automatically called by HexDeviceApi to initialize the SdtHello device.
 
 **Parameters:**
 - `device_id`: Device ID from SecondaryDeviceStatus
 - `device_type`: Device type (SecondaryDeviceType enum, e.g., SdtHello1J1T4BV1)
+- `proto_version`: Protocol version as a tuple (major, minor)
 - `send_message_callback`: Callback function for sending messages
 - `name` (str, optional): Device name, defaults to "SdtHello"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 500

@@ -1,14 +1,18 @@
 The `Arm` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
-Supported robot types:
-- `RtArmSaberD6x`: Saber 6-DOF robotic arm (ID: 14)
-- `RtArmSaberD7x`: Saber 7-DOF robotic arm (ID: 15)
-- `RtArmArcherD6Y_P1`: Archer 6-DOF robotic arm (ID: 16)
-- `RtArmArcherY6L_V1`: Archer 6-DOF robotic arm (ID: 17)
-- `RtArmArcherY6_H1`: Archer 6-DOF robotic arm (ID: 25)
-- `RtArmFireflyY6_H1`: Firefly 6-DOF robotic arm (ID: 27)
-- `RtHelloArcherY6_H1`: Hello Archer 6-DOF robotic arm (ID: 26)
-- `RtHelloFireflyY6_H1`: Hello Firefly 6-DOF robotic arm (ID: 28)
+## Supported Robot Types
+
+| Robot Type | Degrees of Freedom | Model | ID | Features | Application Scenarios |
+|------------|-------------------|-------|----|----------|----------------------|
+| `RtArmSaberD6x` | 6 | Saber | 14 | Lightweight 6-DOF arm, suitable for teaching and research | Education, laboratory, small applications |
+| `RtArmSaberD7x` | 7 | Saber | 15 | 7-DOF arm with redundant degrees of freedom | Complex operations, obstacle avoidance, education |
+| `RtArmArcherD6Y_P1` | 6 | Archer | 16 | Industrial-grade 6-DOF arm with high precision | Industrial automation, precision operations |
+| `RtArmArcherY6L_V1` | 6 | Archer | 17 | Long arm version with larger working range | Large space operations, material handling |
+| `RtArmArcherY6_H1` | 6 | Archer | 25 | High-load version with strong carrying capacity | Heavy material handling, industrial assembly |
+| `RtArmFireflyY6_H1` | 6 | Firefly | 27 | High-speed response arm, suitable for fast operations | Sorting, assembly lines, high-speed tasks |
+| `RtHelloArcherY6_H1` | 6 | Hello Archer | 26 | Collaborative arm with good safety performance | Human-robot collaboration, service robots |
+| `RtHelloFireflyY6_H1` | 6 | Hello Firefly | 28 | Lightweight collaborative arm | Service robots, education, research |
+| `RtArmArcherX7h1` | 7 | Archer | 29 | 7-DOF arm with high precision and payload | Industrial automation, complex operations |
 
 # Arm
 ```python
@@ -19,13 +23,14 @@ The common function can be found in: [DeviceBase](API-Common#DeviceBase) and [Mo
 
 ## `__init__`
 ```python
-def __init__(self, robot_type, motor_count, name: str = "Arm", control_hz: int = 500, send_message_callback=None):
+def __init__(self, robot_type, motor_count, proto_version, name: str = "Arm", control_hz: int = 500, send_message_callback=None):
 ```
 Automatically called by HexDeviceApi to initialize the Arm robotic arm device.
 
 **Parameters:**
 - `robot_type`: Robot type (RobotType enum or int ID)
 - `motor_count` (int): Number of motors
+- `proto_version` (tuple[int, int]): Protocol version as a tuple (major, minor)
 - `name` (str, optional): Device name, defaults to "Arm"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 500
 - `send_message_callback` (callable, optional): Callback function for sending messages
@@ -33,7 +38,7 @@ Automatically called by HexDeviceApi to initialize the Arm robotic arm device.
 **Examples:**
 ```python
 # Usually called internally by HexDeviceApi
-arm = Arm(robot_type=16, motor_count=6, name="MyArm", control_hz=500)
+arm = Arm(robot_type=16, motor_count=6, proto_version=(1, 2), name="MyArm", control_hz=500)
 ```
 
 ## `start`
@@ -306,6 +311,141 @@ Examples:
 arm_name = arm.get_arm_name()
 if arm_name:
     print(f"Arm name: {arm_name}")
+```
+
+## Advanced Control Methods
+
+### end_effector_control
+```python
+def end_effector_control(self, position: Union[List[float], Tuple[float, float, float]], orientation: Union[List[float], Tuple[float, float, float, float], None] = None, gravity_acc: Optional[List[float]] = None):
+```
+Controls the position and orientation of the arm's end effector.
+
+**Parameters:**
+- `position` (Union[List[float], Tuple[float, float, float]]): End effector position (x, y, z) in meters, length must be 3
+- `orientation` (Union[List[float], Tuple[float, float, float, float], None], optional): End effector orientation as quaternion (qw, qx, qy, qz), defaults to [1, 0, 0, 0] (identity quaternion)
+- `gravity_acc` (Optional[List[float]], optional): Gravity acceleration (ax, ay, az) for compensation, length must be 3 when provided
+
+**Notes:**
+- This method allows direct control of the end effector position and orientation without manually calculating joint angles
+- Suitable for scenarios requiring precise end effector positioning
+- Gravity compensation improves control accuracy, especially for vertical movements
+
+Examples:
+```python
+# Control end effector to specified position (default orientation)
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5]  # x=0.5m, y=0.0m, z=0.5m
+)
+
+# Control end effector to specified position and orientation
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5],
+    orientation=[1.0, 0.0, 0.0, 0.0]  # Identity quaternion (default orientation)
+)
+
+# End effector control with gravity compensation
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5],
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
+```
+
+### joint_position_control
+```python
+def joint_position_control(self, joint_positions: List[float]):
+```
+A more convenient joint position control mode that plans the target position before moving.
+
+**Parameters:**
+- `joint_positions` (List[float]): Joint positions in radians, length must match the motor count
+
+**Notes:**
+- This method automatically plans the joint movement path to smoothly move the arm to the target position
+- Suitable for scenarios requiring precise joint angle control
+- Internal joint limit validation is performed to ensure safe movement
+- The method uses the arm's built-in trajectory planning capabilities
+
+Examples:
+```python
+# Control arm to specified joint positions
+arm.joint_position_control(
+    joint_positions=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0]  # Target positions for 6 joints
+)
+
+# Get current joint positions and then make fine adjustments
+current_positions = arm.get_motor_positions()
+if current_positions is not None:
+    # Make fine adjustments based on current positions
+    new_positions = [pos + 0.1 for pos in current_positions]
+    arm.joint_position_control(new_positions)
+```
+
+### enable_free_drag
+```python
+def enable_free_drag(self, gravity_acc: list[float]):
+```
+Enables free drag mode, allowing manual manipulation of the arm.
+
+**Parameters:**
+- `gravity_acc` (list[float]): Gravity acceleration (ax, ay, az) for compensation, length must be 3
+
+**Notes:**
+- In free drag mode, the arm enters a low-impedance state, allowing the user to manually move it
+- Gravity compensation parameters are used to counteract the effects of gravity, making dragging easier
+- Suitable for teaching, programming demonstration, and manual arm position adjustment
+- While in free drag mode, the arm will not execute other control commands
+- To exit free drag mode, send another control command such as position or speed
+
+Examples:
+```python
+# Enable free drag mode (with gravity compensation)
+arm.enable_free_drag(
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
+print("Free drag mode enabled. You can now manually move the arm.")
+
+# Note: While in free drag mode, the arm will not execute other control commands
+# To exit free drag mode, send another control command, such as position or speed
+```
+
+### compensated_mit_control
+```python
+def compensated_mit_control(self, mit_commands: List[MitMotorCommand], gravity_acc: List[float]):
+```
+Compensated MIT control mode with higher precision.
+
+**Parameters:**
+- `mit_commands` (List[MitMotorCommand]): MIT command list, each element contains torque, speed, position, kp, and kd parameters
+- `gravity_acc` (List[float]): Gravity acceleration (ax, ay, az) for compensation, length must be 3
+
+**Notes:**
+- MIT control allows simultaneous control of joint position, speed, and torque
+- Gravity compensation improves control accuracy, especially for vertical movements
+- Suitable for high-precision control scenarios such as fine manipulation and force control
+- Each MitMotorCommand includes:
+  - `torque`: Target torque (Nm)
+  - `speed`: Target speed (rad/s)
+  - `position`: Target position (rad)
+  - `kp`: Proportional gain
+  - `kd`: Derivative gain
+
+Examples:
+```python
+# Construct MIT commands
+mit_commands = arm.construct_mit_command(
+    pos=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # Target positions
+    speed=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target speeds
+    torque=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target torques
+    kp=[100.0] * 6,  # Proportional gains
+    kd=[10.0] * 6     # Derivative gains
+)
+
+# Compensated MIT control with gravity compensation
+arm.compensated_mit_control(
+    mit_commands=mit_commands,
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
 ```
 
 ## Validation Methods

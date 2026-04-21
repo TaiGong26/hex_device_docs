@@ -1,10 +1,13 @@
 The `Chassis` class inherits from [DeviceBase](API-Common#Devicebase) and [MotorBase](API-Common#Motorbase), primarily implementing the mapping to `BaseStatus`. This class corresponds to `BaseStatus` in the proto, managing chassis status and motor control.
 
-Supported robot types:
-- `RtArk2LrDriver`: Chassis Mark2 (2 motors)
-- `RtCustomPcwVehicle`: Custom PCW vehicle (8 motors)
-- `RtMaverX4`: Maver vehicle (8 motors)
-- `RtTripleOmniWheelLRDriver`: Triple Omni Wheel LR Driver
+## 支持的机器人类型
+
+| 机器人类型 | 电机数量 | 特性说明 | 应用场景 |
+|-----------|---------|---------|----------|
+| `RtArk2LrDriver` | 2 | 底盘 Mark2，仅支持前后和旋转运动 | 小型移动机器人 |
+| `RtCustomPcwVehicle` | 8 | 自定义 PCW 车辆 | 复杂环境导航 |
+| `RtMaverX4` | 8 | Maver 车辆，支持全向移动 | 工业环境、仓储物流 |
+| `RtTripleOmniWheelLRDriver` | 3 | 三轮全向轮底盘 | 高精度定位、狭窄空间操作 |
 
 # Chassis
 ```python
@@ -274,10 +277,21 @@ chassis.set_vehicle_speed(0.0, 0.0, 0.0)
 ```python
 def is_timeout(self) -> bool:
 ```
-When a command times out, the chassis will automatically lock its speed at 0. You can use this function to check whether the command has timed out.  
+Checks if the command has timed out. When a command times out, the chassis will automatically lock its speed at 0.
+
+**Returns:**
+- `bool`: True if the command has timed out, False otherwise
+
+**Notes:**
+- The timeout threshold is 100ms
+- The chassis will automatically stop when a timeout occurs
+
+Examples:
 ```python
 if chassis.is_timeout():
-    print("timeout!!")
+    print("Command timeout detected!")
+    # Take appropriate action, e.g., re-send command
+    chassis.set_vehicle_speed(0.0, 0.0, 0.0)  # Stop the chassis
 ```
 
 ## get_status_summary

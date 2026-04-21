@@ -12,13 +12,14 @@ The common functions can be found in: [DeviceBase](API-Common#DeviceBase) and [M
 
 ## `__init__`
 ```python
-def __init__(self, motor_count: int, robot_type: int, name: str = "ZetaLift", control_hz: int = 500, send_message_callback=None):
+def __init__(self, motor_count: int, robot_type: int, proto_version: tuple[int, int], name: str = "ZetaLift", control_hz: int = 500, send_message_callback=None):
 ```
 Automatically called by HexDeviceApi to initialize the ZetaLift device.
 
 **Parameters:**
 - `motor_count` (int): Number of motors
 - `robot_type` (int): Robot type (RobotType enum, e.g., RtZetaVc2)
+- `proto_version` (tuple[int, int]): Protocol version as a tuple (major, minor)
 - `name` (str, optional): Device name, defaults to "ZetaLift"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 500
 - `send_message_callback` (callable, optional): Callback function for sending messages
@@ -270,8 +271,9 @@ if motor_summary is not None:
     print(f"States: {motor_summary['states']}")
 ```
 
-## Usage Example
+## Usage Examples
 
+### Basic Zeta Lift Control Example
 ```python
 from hex_device import HexDeviceApi
 from hex_device.generated import public_api_types_pb2
@@ -281,7 +283,7 @@ import asyncio
 # Create API instance
 api = HexDeviceApi(ws_url="ws://localhost:8080")
 
-# Find ZetaLift device by robot type
+# Find Zeta lift device
 zeta_lift = api.find_device_by_robot_type(robot_type=public_api_types_pb2.RobotType.RtZetaVc2)
 
 if zeta_lift is not None:
@@ -299,10 +301,10 @@ if zeta_lift is not None:
     if limits is not None:
         print(f"Joint limits: {limits}")
     
-    # Set move speed for position mode
+    # Set move speed
     zeta_lift.set_move_speed([0.5, 0.5, 0.5])
     
-    # Get motor positions
+    # Get current positions
     positions = zeta_lift.get_motor_positions()
     if positions is not None:
         print(f"Current positions: {positions}")
@@ -314,6 +316,6 @@ if zeta_lift is not None:
     summary = zeta_lift.get_status_summary()
     print(f"Status summary: {summary}")
     
-    # Stop device control
+    # Stop control
     zeta_lift.stop()
 ```

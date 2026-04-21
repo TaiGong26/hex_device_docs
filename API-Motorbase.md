@@ -1,9 +1,17 @@
 # MotorBase
+
+## 概述
+MotorBase是带电机设备的基类，为底盘、机械臂等设备提供通用的电机控制功能。
+
 ## `__init__`
 ```python
 def __init__(self, motor_count: int, name: str = ""):
 ```
 Automatically called by HexDeviceApi, passing in the motor count and motor group name.
+
+**参数：**
+- `motor_count` (int): 电机数量
+- `name` (str, optional): 电机组名称，默认为空字符串
 
 ## target_positions
 ```python
@@ -478,3 +486,96 @@ Examples:
 ```python
 motor.flush_motor_data()
 ```
+<!-- 
+## 电机参数说明
+
+### 通用电机参数范围
+
+| 参数 | 单位 | 范围 | 说明 |
+|------|------|------|------|
+| 位置 | rad | 取决于电机类型 | 电机旋转角度 |
+| 速度 | rad/s | -10.0 到 10.0 | 电机旋转速度 |
+| 力矩 | Nm | 取决于电机型号 | 电机输出力矩 |
+| 温度 | °C | 0 到 85 | 电机温度 |
+| 电压 | V | 20.0 到 28.0 | 电机工作电压 |
+| 电流 | A | 0 到 20 | 电机工作电流 |
+
+### 不同设备类型的电机参数
+
+#### 底盘电机
+- **速度范围**: -10.0 到 10.0 (rad/s)
+- **电流范围**: 0 到 20 (A)
+- **温度范围**: 0 到 85 (°C)
+- **典型应用**: 移动机器人、AGV
+
+#### 机械臂电机
+- **位置范围**: 取决于关节类型
+- **速度范围**: -5.0 到 5.0 (rad/s)
+- **电流范围**: 0 到 15 (A)
+- **温度范围**: 0 到 80 (°C)
+- **典型应用**: 工业机械臂、协作机器人
+
+## 电机控制示例
+
+### 基础电机控制
+```python
+# 速度控制
+motor.motor_command(CommandType.SPEED, [1.0, -1.0, 0.5, 0.5])
+
+# 位置控制
+motor.motor_command(CommandType.POSITION, [0.0, 1.57, 3.14, 0.0])
+
+# 力矩控制
+motor.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.2, 0.0])
+
+# 刹车控制
+motor.motor_command(CommandType.BRAKE, [True, True, True, True])
+```
+
+### MIT控制示例
+```python
+# 构造MIT命令
+mit_commands = motors.construct_mit_command(
+    pos=[0.0, 1.57, 3.14, 0.0],  # 目标位置
+    speed=[0.0, 0.0, 0.0, 0.0],  # 目标速度
+    torque=[0.0, 0.0, 0.0, 0.0],  # 目标力矩
+    kp=[150.0, 150.0, 150.0, 100.0],  # 比例增益
+    kd=[12.0, 12.0, 12.0, 8.0]  # 微分增益
+)
+
+# 发送MIT命令
+motors.motor_command(CommandType.MIT, mit_commands)
+```
+
+### 电机状态监控
+```python
+def monitor_motor_health(motor):
+    """监控电机健康状态"""
+    while True:
+        # 获取电机温度
+        temps = motor.get_motor_temperatures()
+        if temps is not None:
+            for i, temp in enumerate(temps):
+                if temp > 70:
+                    print(f"警告: 电机 {i} 温度过高: {temp}°C")
+                elif temp > 60:
+                    print(f"提示: 电机 {i} 温度较高: {temp}°C")
+        
+        # 获取电机错误代码
+        error_codes = motor.get_motor_error_codes()
+        if error_codes is not None:
+            for i, code in enumerate(error_codes):
+                if code is not None:
+                    print(f"错误: 电机 {i} 错误代码: {code}")
+        
+        # 等待一段时间
+        import time
+        time.sleep(1)
+
+# 启动监控线程
+import threading
+monitor_thread = threading.Thread(target=monitor_motor_health, args=(motor,))
+monitor_thread.daemon = True
+monitor_thread.start()
+``` 
+-->

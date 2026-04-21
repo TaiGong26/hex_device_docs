@@ -1,18 +1,21 @@
 The `Hands` class inherits from [OptionalDeviceBase](API-Common#optionaldevicebase) and [MotorBase](API-Common#motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
-- `HtGp100`: GP100 hand type
-- `SdtHandGp80G1` Gp80 hand type
+- `SdtHandGp100`: GP100 hand type
+- `SdtHandGp80G1`: GP80G1 hand type
+- `SdtHandGr100`: GR100 hand type
 
 ## `__init__`
 ```python
-def __init__(self, hand_type, motor_count, send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
+def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
 ```
 Initializes a Hands device for robotic hand control.
 
 **Parameters:**
-- `hand_type`: Hand type (HandType enum)
+- `device_id`: Device ID (from SecondaryDeviceStatus)
+- `device_type`: Device type (SecondaryDeviceType enum, e.g., SdtHandGp100, SdtHandGp80G1, SdtHandGr100)
 - `motor_count`: Number of motors in the hand
+- `proto_version`: Protocol version as a tuple (major, minor)
 - `send_message_callback`: Callback function for sending messages
 - `name` (str, optional): Device name, defaults to "Hands"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 250
@@ -20,14 +23,8 @@ Initializes a Hands device for robotic hand control.
 
 **Examples:**
 ```python
-# Create a GP100 hand device
-hand = Hands(
-    hand_type=HandType.HtGp100,
-    motor_count=1,
-    send_message_callback=my_callback,
-    name="Hands",
-    control_hz=500
-)
+# Usually called internally by HexDeviceApi when creating hand devices
+# Users typically don't need to call this directly
 ```
 
 ## command_timeout_check
