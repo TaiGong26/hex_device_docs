@@ -435,21 +435,19 @@ if temp is not None and temp > 70:
 
 ### get_motor_warnings
 ```python
-def get_motor_warnings(self, motor_index: int) -> Optional[Dict[str, Any]]:
+def get_motor_warnings(self) -> Optional[List[str]]:
 ```
-Gets the warning information for the specified motor.
-
-**Parameters:**
-- `motor_index` (int): Index of the motor
+Gets all motor warnings.
 
 **Returns:**
-- `Optional[Dict[str, Any]]`: Dictionary containing motor warning information, or None if no warnings
+- `Optional[List[str]]`: List of motor warnings, or None if no warnings
 
 Examples:
 ```python
-warnings = motor.get_motor_warnings(0)
+warnings = motor.get_motor_warnings()
 if warnings is not None:
-    print(f"Motor 0 warnings: {warnings}")
+    for warning in warnings:
+        print(f"Warning: {warning}")
 ```
 
 ## Voltage Methods
@@ -548,54 +546,93 @@ if radii is not None:
 
 ## Command Methods
 
+> **Note:** The actual method name in code is `motor_command`, but when using devices that inherit from MotorBase (like Arm, Chassis, etc.), you should call it via the device instance: `device.motor_command()`. Since MotorBase is an abstract base class for devices with motors, the command is sent to the actual device, not to a "motor" object directly.
+
 ### motor_command
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
 ```
-Sets motor commands, supporting five command types: BRAKE, SPEED, POSITION, TORQUE, and MIT.
+Sets motor commands for the device, supporting five command types: BRAKE, SPEED, POSITION, TORQUE, and MIT.
 
 **Parameters:**
-- `command_type` (CommandType): Type of command (BRAKE, SPEED, POSITION, TORQUE, MIT)
-- `values`: Command values (list of floats, bools, MitMotorCommand objects, or numpy array)
+- `command_type` (CommandType): Type of command:
+  - `BRAKE`: Brake control (values determines motor count only)
+  - `SPEED`: Speed control (rad/s)
+  - `POSITION`: Position control (rad)
+  - `TORQUE`: Torque control (Nm)
+  - `MIT`: MIT control with PID (List[MitMotorCommand])
+- `values`: Command values:
+  - BRAKE: `List[bool]` - brake states
+  - SPEED: `List[float]` - target speeds (rad/s)
+  - POSITION: `List[float]` - target positions (rad)
+  - TORQUE: `List[float]` - target torques (Nm)
+  - MIT: `List[MitMotorCommand]` - MIT commands with position, speed, torque, kp, kd
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType
+from hex_device.motor_base import CommandType, MitMotorCommand
 
-# Set speed command
-motor.motor_command(CommandType.SPEED, [1.0, -1.0, 0.5])
+# BRAKE command - values only determine motor count
+device.motor_command(CommandType.BRAKE, [True] * motor_count)
 
-# Set position command
-motor.motor_command(CommandType.POSITION, [0.0, 1.57, 3.14])
+# SPEED command - control motor speeds (rad/s)
+device.motor_command(CommandType.SPEED, [1.0, -1.0, 0.5])
 
-# Set brake command
-motor.motor_command(CommandType.BRAKE, [True, True, False])
+# POSITION command - control motor positions (rad)
+device.motor_command(CommandType.POSITION, [0.0, 1.57, 3.14])
+
+# TORQUE command - control motor torques (Nm)
+device.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
 
 # Set torque command
 motor.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
 
-# Use numpy data
-motor.motor_command(CommandType.POSITION, np.array([0.0, 1.57, 3.14]))
+# set mit command
+# Using numpy arrays to construct MIT commands
+mit_commands = device.construct_mit_command(
+    np.array([-0.3, -1.48, 2.86, 0.0, 0.0, 0.0]),
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+    np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+    np.array([150.0, 150.0, 150.0, 150.0, 39.0, 39.0]),
+    np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
+)
+
+# Using lists (alternative syntax)
+mit_commands = device.construct_mit_command(
+    [0.3, -1.48, 2.86, 0.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [150.0, 150.0, 150.0, 150.0, 39.0, 39.0],
+    [12.0, 12.0, 12.0, 12.0, 0.8, 0.8]
+)
+
+# Use with motor_command
+device.motor_command(CommandType.MIT, mit_commands)
 ```
 
 ### mit_motor_command
 ```python
 def mit_motor_command(self, mit_commands: List[MitMotorCommand]):
 ```
-Sets MIT motor commands, with each command containing torque, speed, position, kp, and kd parameters.
+Convenience method for MIT motor commands. Internally calls `motor_command(CommandType.MIT, mit_commands)`.
 
 **Parameters:**
-- `mit_commands` (List[MitMotorCommand]): List of MIT motor commands
+- `mit_commands` (List[MitMotorCommand]): List of MIT motor commands, each containing:
+  - `position`: Target position (rad)
+  - `speed`: Target speed (rad/s)
+  - `torque`: Target torque (Nm)
+  - `kp`: Proportional gain
+  - `kd`: Derivative gain
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType, MitMotorCommand
+from hex_device.motor_base import MitMotorCommand
 
 mit_cmds = [
     MitMotorCommand(torque=0.5, speed=1.0, position=0.0, kp=10.0, kd=1.0),
     MitMotorCommand(torque=0.3, speed=0.5, position=1.57, kp=8.0, kd=0.8)
 ]
-motor.mit_motor_command(mit_cmds)
+device.mit_motor_command(mit_cmds)
 ```
 
 ### construct_mit_command
@@ -625,8 +662,8 @@ Examples:
 from hex_device.motor_base import CommandType
 import numpy as np
 
-# Using numpy arrays
-mit_commands = motors.construct_mit_command(
+# Using numpy arrays to construct MIT commands
+mit_commands = device.construct_mit_command(
     np.array([-0.3, -1.48, 2.86, 0.0, 0.0, 0.0]),
     np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
     np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
@@ -634,8 +671,8 @@ mit_commands = motors.construct_mit_command(
     np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
 )
 
-# Using lists
-mit_commands = motors.construct_mit_command(
+# Using lists (alternative syntax)
+mit_commands = device.construct_mit_command(
     [0.3, -1.48, 2.86, 0.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -644,42 +681,7 @@ mit_commands = motors.construct_mit_command(
 )
 
 # Use with motor_command
-motors.motor_command(CommandType.MIT, mit_commands)
-```
-
-## Data Update Methods
-
-### update_motor_data
-```python
-def update_motor_data(self, positions: List[float], velocities: List[float], torques: List[float], driver_temperature: List[float], motor_temperature: List[float], voltage: List[float], pulse_per_rotation: Optional[List[float]] = None, wheel_radius: Optional[List[float]] = None, error_codes: Optional[List[Optional[int]]] = None, current_targets: Optional[List[public_api_types_pb2.SingleMotorTarget]] = None):
-```
-Updates all motor data, called internally by HexDeviceApi. Position data is automatically converted to radians.
-
-**Parameters:**
-- `positions` (List[float]): Motor positions
-- `velocities` (List[float]): Motor velocities (rad/s)
-- `torques` (List[float]): Motor torques (Nm)
-- `driver_temperature` (List[float]): Driver temperatures (degC)
-- `motor_temperature` (List[float]): Motor temperatures (degC)
-- `voltage` (List[float]): Motor voltages (V)
-- `pulse_per_rotation` (Optional[List[float]]): Pulses per rotation
-- `wheel_radius` (Optional[List[float]]): Wheel radii (m)
-- `error_codes` (Optional[List[Optional[int]]]): Motor error codes
-- `current_targets` (Optional[List[SingleMotorTarget]]): Current motor targets
-
-Examples:
-```python
-# Usually called internally by HexDeviceApi
-from hex_device.generated import public_api_types_pb2
-
-motor.update_motor_data(
-    positions=[32768, 16384, 0],  # encoder positions
-    velocities=[1.0, 0.5, 0.0],
-    torques=[0.5, 0.3, 0.0],
-    driver_temperature=[45.0, 42.0, 40.0],
-    motor_temperature=[35.0, 33.0, 30.0],
-    voltage=[24.0, 24.1, 23.9]
-)
+device.motor_command(CommandType.MIT, mit_commands)
 ```
 
 ## Summary Methods
@@ -688,17 +690,31 @@ motor.update_motor_data(
 ```python
 def get_motor_summary(self) -> Optional[Dict[str, Any]]:
 ```
-Gets the motor group status summary, containing status information and target commands for all motors. Returns None if no data available.
+Gets the motor group status summary, containing status information for all motors. Returns None if no data available.
+
+**Returns:**
+- `Optional[Dict[str, Any]]`: Dictionary containing:
+  - `name` (str): Device name
+  - `motor_count` (int): Number of motors
+  - `positions` (List[float]): Motor positions (rad)
+  - `velocities` (List[float]): Motor velocities (rad/s)
+  - `torques` (List[float]): Motor torques (Nm)
+  - `error_codes` (List[int]): Motor error codes
+  - `driver_temperature` (List[float]): Driver temperatures (degC)
+  - `motor_temperature` (List[float]): Motor temperatures (degC)
+  - `voltage` (List[float]): Motor voltages (V)
+  - `pulse_per_rotation` (Optional[List[float]]): Pulses per rotation
+  - `wheel_radius` (Optional[List[float]]): Wheel radii (m)
+  - `last_update_time` (Optional[Dict]): Last update timestamp
 
 Examples:
 ```python
 summary = motor.get_motor_summary()
 if summary is not None:
     print(f"Motor count: {summary['motor_count']}")
-    print(f"States: {summary['states']}")
     print(f"Positions: {summary['positions']}")
-    if summary['target_command']:
-        print(f"Command type: {summary['target_command']['command_type']}")
+    print(f"Velocities: {summary['velocities']}")
+    print(f"Torques: {summary['torques']}")
 ```
 
 ## Utility Methods
