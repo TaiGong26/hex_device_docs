@@ -15,7 +15,10 @@
 3. [Initialization](#__init__)
 4. [Data Methods](#data-methods)
    - [get_imu_data](#get_imu_data)
+   - [get_imu_summary](#get_imu_summary)
 5. [Inherited Methods](#inherited-methods)
+6. [Usage Example](#usage-example)
+
 
 
 ## Overview
@@ -63,33 +66,6 @@ Gets the current IMU data including acceleration, angular velocity, and quaterni
   - `acceleration`: Acceleration data (m/s²)
   - `angular_velocity`: Angular velocity data (rad/s)
   - `quaternion`: Quaternion data [w, x, y, z]
-
-```proto
-message ImuAcceleration {
-    float ax = 1; // m/s^2
-    float ay = 2; // m/s^2
-    float az = 3; // m/s^2
-}
-
-message ImuAngularVelocity {
-    float wx = 1; // rad/s
-    float wy = 2; // rad/s
-    float wz = 3; // rad/s
-}
-
-message ImuQuaternion {
-    float qx = 1; // unitless
-    float qy = 2; // unitless
-    float qz = 3; // unitless
-    float qw = 4; // unitless
-}
-
-message ImuData {
-    ImuAcceleration acceleration = 1;
-    ImuAngularVelocity angular_velocity = 2;
-    ImuQuaternion quaternion = 3;
-}
-```
 
 Examples:
 ```python

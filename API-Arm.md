@@ -1,10 +1,11 @@
 # Arm API Documentation
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+-->
 
 ## Table of Contents
 
@@ -32,8 +33,6 @@
    - [get_arm_name](#get_arm_name)
 7. [Advanced Control Methods](#advanced-control-methods)
    - [end_effector_control](#end_effector_control)
-   - [mit_control](#mit_control)
-   - [construct_mit_command](#construct_mit_command)
    - [enable_free_drag](#enable_free_drag)
    - [enable_zero_current_control](#enable_zero_current_control)
    - [compensated_mit_control](#compensated_mit_control)
@@ -44,8 +43,7 @@
 9. [Configuration Management](#configuration-management)
    - [reload_arm_config_from_dict](#reload_arm_config_from_dict)
 10. [Motion History Management](#motion-history-management)
-11. [Best Practices](#best-practices)
-12. [Troubleshooting](#troubleshooting)
+
 
 ## Overview
 
@@ -171,11 +169,11 @@ arm.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.2, 0.1, 0.1, 0.0])
 
 # Set MIT commands (may require enable_mit() first)
 mit_commands = arm.construct_mit_command(
-    [0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # positions
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # speeds
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # torques
-    [100.0] * 6,  # kp
-    [10.0] * 6    # kd
+    pos=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # Target positions
+    speed=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target speeds
+    torque=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target torques
+    kp=[100.0] * 6,  # Proportional gains
+    kd=[10.0] * 6    # Derivative gains
 )
 arm.motor_command(CommandType.MIT, mit_commands)
 ```
@@ -795,7 +793,7 @@ if arm is not None:
     # Stop device control
     arm.stop()
 ```
-
+<!-- 
 ## Best Practices
 
 1. **Always call `stop()` before exiting**
@@ -837,3 +835,4 @@ if arm is not None:
    - Enable verbose logging to see detailed communication
    - Regularly check `get_arm_config()` and `get_arm_series()`
    - Test with simple commands before complex operations
+ -->

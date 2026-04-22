@@ -16,6 +16,7 @@
    - [get_gamepad_read](#get_gamepad_read)
    - [get_gamepad_summary](#get_gamepad_summary)
 5. [Inherited Methods](#inherited-methods)
+6. [Usage Example](#usage-example)
 
 
 ## Overview

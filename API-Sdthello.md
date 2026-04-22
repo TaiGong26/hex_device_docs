@@ -16,9 +16,12 @@
 4. [Data Methods](#data-methods)
    - [has_new_data](#has_new_data)
    - [get_simple_motor_status](#get_simple_motor_status)
+   - [get_joint_limits](#get_joint_limits)
+   - [get_hello_summary](#get_hello_summary)
 5. [Control Methods](#control-methods)
-   - [set_rgb_stripe](#set_rgb_stripe)
+   - [set_rgb_stripe_command](#set_rgb_stripe_command)
 6. [Inherited Methods](#inherited-methods)
+7. [Usage Example](#usage-example)
 
 
 ## Overview

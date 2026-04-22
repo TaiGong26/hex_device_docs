@@ -1,29 +1,34 @@
 # ZetaLift API Documentation
 
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
 
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [Class Definition](#class-definition)
 3. [Initialization](#__init__)
-4. [Calibration Methods](#calibration-methods)
+4. [Calibrate Methods](#calibrate)
    - [calibrate](#calibrate)
    - [is_calibrated](#is_calibrated)
 5. [Control Methods](#control-methods)
    - [set_move_speed](#set_move_speed)
-   - [get_joint_limits](#get_joint_limits)
-   - [get_angles](#get_angles)
-   - [set_angles](#set_angles)
 6. [State Methods](#state-methods)
+   - [get_joint_limits](#get_joint_limits)
    - [get_state](#get_state)
+   - [get_my_session_id](#get_my_session_id)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_status_summary](#get_status_summary)
+7. [motor_command](#motor_command)
 7. [Inherited Methods](#inherited-methods)
-8. [Best Practices](#best-practices)
-9. [Troubleshooting](#troubleshooting)
+8. [Usage Examples](#usage-examples)
+
+
 
 ## Overview
 
@@ -69,9 +74,8 @@ Initiates the calibration process for the ZetaLift. This method sets the calibra
 ```python
 zeta_lift.calibrate()
 # Wait for calibration to complete
-import time
 while not zeta_lift.is_calibrated():
-    time.sleep(0.1)
+    await asyncio.sleep(0.1)
 ```
 
 ## set_move_speed
@@ -331,10 +335,10 @@ if zeta_lift is not None:
     if limits is not None:
         print(f"Joint limits: {limits}")
     
-    # Set move speed
+    # Set move speed 
     zeta_lift.set_move_speed([0.5, 0.5, 0.5])
     
-    # Get current positions
+    # Get current motor positions
     positions = zeta_lift.get_motor_positions()
     if positions is not None:
         print(f"Current positions: {positions}")

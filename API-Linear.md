@@ -1,28 +1,33 @@
 # LinearLift API Documentation
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Class Definition](#class-definition)
-3. [Initialization](#__init__)
-4. [Data Methods](#data-methods)
+2. [Supported Robot Types](#supported-robot-types)
+3. [Class Definition](#class-definition)
+4. [Initialization](#__init__)
+5. [Data Methods](#data-methods)
    - [has_new_data](#has_new_data)
-   - [get_move_speed](#get_move_speed)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_state](#get_state)
+   - [get_pos_range](#get_pos_range)
    - [get_motor_positions](#get_motor_positions)
-   - [get_lift_data](#get_lift_data)
-   - [get_lift_angles](#get_lift_angles)
-5. [Control Methods](#control-methods)
+   - [get_move_speed](#get_move_speed)
+   - [get_max_move_speed](#get_max_move_speed)
+   - [get_pulse_per_meter](#get_pulse_per_meter)
+6. [Control Methods](#control-methods)
+   - [motor_command](#motor_command)
    - [set_move_speed](#set_move_speed)
-   - [set_position](#set_position)
-6. [Inherited Methods](#inherited-methods)
-7. [Best Practices](#best-practices)
-8. [Troubleshooting](#troubleshooting)
+   - [calibrate](#calibrate)
+7. [Inherited Methods](#inherited-methods)
+8. [Usage Examples](#usage-examples)
 
 ## Overview
 

@@ -1,11 +1,11 @@
 # Chassis API Documentation
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
-
+ -->
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -35,8 +35,7 @@
    - [motor_command](#motor_command)
    - [set_vehicle_speed](#set_vehicle_speed)
    - [clear_parking_stop](#clear_parking_stop)
-9. [Best Practices](#best-practices)
-10. [Troubleshooting](#troubleshooting)
+
 
 ## Overview
 
@@ -395,6 +394,7 @@ print(f"Battery voltage: {summary['battery_info']['voltage']}V")
 print(f"Vehicle position: {summary['vehicle_position']}")
 ```
 
+<!-- 
 ## Best Practices
 
 1. **Always call `stop()` before exiting**
@@ -437,3 +437,4 @@ print(f"Vehicle position: {summary['vehicle_position']}")
    - Regularly check `get_base_state()` and `get_status_summary()`
    - Test with simple commands before complex operations
 
+ -->
