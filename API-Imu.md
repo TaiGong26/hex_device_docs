@@ -23,7 +23,7 @@
 
 ## Overview
 
-The `Imu` class inherits from [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing IMU (Inertial Measurement Unit) data reading and status management. This class processes the optional `imu_data` field from APIUp messages.
+The `Imu` class inherits from [OptionalDeviceBase](API-Common.md#OptionalDeviceBase), primarily implementing IMU (Inertial Measurement Unit) data reading and status management. This class processes the optional `imu_data` field from APIUp messages.
 
 Supported device types:
 - `SdtImuY200`: IMU Y200 device type
@@ -33,7 +33,7 @@ Supported device types:
 class Imu(OptionalDeviceBase):
 ```
 
-The common function can be found in: [OptionalDeviceBase](API-Common#OptionalDeviceBase).
+The common function can be found in: [OptionalDeviceBase](API-Common.md#OptionalDeviceBase).
 
 ## `__init__`
 ```python

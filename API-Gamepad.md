@@ -21,7 +21,7 @@
 
 ## Overview
 
-The `Gamepad` class inherits from [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing gamepad data reading and status management. This class processes the optional `gamepad_read` field from APIUp messages.
+The `Gamepad` class inherits from [OptionalDeviceBase](API-Common.md#OptionalDeviceBase), primarily implementing gamepad data reading and status management. This class processes the optional `gamepad_read` field from APIUp messages.
 
 Supported device types:
 - `SdtGamepad`: Gamepad device type
@@ -31,7 +31,7 @@ Supported device types:
 class Gamepad(OptionalDeviceBase):
 ```
 
-The common function can be found in: [OptionalDeviceBase](API-Common#OptionalDeviceBase).
+The common function can be found in: [OptionalDeviceBase](API-Common.md#OptionalDeviceBase).
 
 ## `__init__`
 ```python

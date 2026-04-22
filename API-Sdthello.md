@@ -26,7 +26,7 @@
 
 ## Overview
 
-The `SdtHello` class inherits from [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing Hello device data reading and RGB stripe control. This class processes the optional `hello1j1t4b_status` field from APIUp messages.
+The `SdtHello` class inherits from [OptionalDeviceBase](API-Common.md#OptionalDeviceBase), primarily implementing Hello device data reading and RGB stripe control. This class processes the optional `hello1j1t4b_status` field from APIUp messages.
 
 Supported device types:
 - `SdtHello1J1T4BV1`: Hello1J1T4B V1 device type
@@ -36,7 +36,7 @@ Supported device types:
 class SdtHello(OptionalDeviceBase):
 ```
 
-The common function can be found in: [OptionalDeviceBase](API-Common#OptionalDeviceBase).
+The common function can be found in: [OptionalDeviceBase](API-Common.md#OptionalDeviceBase).
 
 ## `__init__`
 ```python

@@ -27,7 +27,7 @@
 
 ## Overview
 
-The `Hands` class inherits from [`OptionalDeviceBase`](API-Common#optionaldevicebase) and [`MotorBase`](API-Motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
+The `Hands` class inherits from [`OptionalDeviceBase`](API-Common.md#optionaldevicebase) and [`MotorBase`](API-Motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
 - `SdtHandGp100`: GP100 hand type

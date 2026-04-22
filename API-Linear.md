@@ -31,7 +31,7 @@
 
 ## Overview
 
-The `LinearLift` class inherits from [DeviceBase](API-Common#Devicebase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
+The `LinearLift` class inherits from [DeviceBase](API-Common.md#Devicebase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
 
 ## Supported Robot Types
 - `RtIotaP1`: Iota P1 Linear Lift
@@ -43,7 +43,7 @@ The `LinearLift` class inherits from [DeviceBase](API-Common#Devicebase), primar
 class LinearLift(DeviceBase):
 ```
 
-Common functions can be found in: [DeviceBase](API-Common#Devicebase)
+Common functions can be found in: [DeviceBase](API-Common.md#Devicebase)
 
 
 ## `__init__`

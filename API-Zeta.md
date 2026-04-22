@@ -32,7 +32,7 @@
 
 ## Overview
 
-The `ZetaLift` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing ZetaLift (rotating lift) status management and motor control. This class processes the `rotate_lift_status` field from APIUp messages.
+The `ZetaLift` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing ZetaLift (rotating lift) status management and motor control. This class processes the `rotate_lift_status` field from APIUp messages.
 
 Supported robot types:
 - `RtZetaVc2`: Zeta Vc2 robot type
@@ -42,7 +42,7 @@ Supported robot types:
 class ZetaLift(DeviceBase, MotorBase):
 ```
 
-The common functions can be found in: [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase).
+The common functions can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase).
 
 ## `__init__`
 ```python

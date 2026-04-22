@@ -47,28 +47,28 @@
 
 ## Overview
 
-The `Arm` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+The `Arm` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
 ## Supported Robot Types
 
-| Robot Type | Degrees of Freedom | Model | ID | Features | Application Scenarios |
-|------------|-------------------|-------|----|----------|----------------------|
-| `RtArmSaberD6x` | 6 | Saber | 14 | Lightweight 6-DOF arm, suitable for teaching and research | Education, laboratory, small applications |
-| `RtArmSaberD7x` | 7 | Saber | 15 | 7-DOF arm with redundant degrees of freedom | Complex operations, obstacle avoidance, education |
-| `RtArmArcherD6Y_P1` | 6 | Archer | 16 | Industrial-grade 6-DOF arm with high precision | Industrial automation, precision operations |
-| `RtArmArcherY6L_V1` | 6 | Archer | 17 | Long arm version with larger working range | Large space operations, material handling |
-| `RtArmArcherY6_H1` | 6 | Archer | 25 | High-load version with strong carrying capacity | Heavy material handling, industrial assembly |
-| `RtArmFireflyY6_H1` | 6 | Firefly | 27 | High-speed response arm, suitable for fast operations | Sorting, assembly lines, high-speed tasks |
-| `RtHelloArcherY6_H1` | 6 | Hello Archer | 26 | Collaborative arm with good safety performance | Human-robot collaboration, service robots |
-| `RtHelloFireflyY6_H1` | 6 | Hello Firefly | 28 | Lightweight collaborative arm | Service robots, education, research |
-| `RtArmArcherX7h1` | 7 | Archer | 29 | 7-DOF arm with high precision and payload | Industrial automation, complex operations |
+| Robot Type | Degrees of Freedom | Model | ID |
+|------------|-------------------|-------|----|
+| `RtArmSaberD6x` | 6 | Saber | 14 |
+| `RtArmSaberD7x` | 7 | Saber | 15 |
+| `RtArmArcherD6Y_P1` | 6 | Archer | 16 |
+| `RtArmArcherY6L_V1` | 6 | Archer | 17 |
+| `RtArmArcherY6_H1` | 6 | Archer | 25 |
+| `RtArmFireflyY6_H1` | 6 | Firefly | 27 |
+| `RtHelloArcherY6_H1` | 6 | Hello Archer | 26 |
+| `RtHelloFireflyY6_H1` | 6 | Hello Firefly | 28 |
+| `RtArmArcherX7h1` | 7 | Archer | 29 |
 
 # Arm
 ```python
 class Arm(DeviceBase, MotorBase):
 ```
 
-The common function can be found in: [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase).
+The common function can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase).
 
 ## `__init__`
 ```python
