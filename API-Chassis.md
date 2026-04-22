@@ -55,7 +55,7 @@ The `Chassis` class inherits from [DeviceBase](API-Common.md#Devicebase) and [Mo
 class Chassis(DeviceBase, MotorBase):
 ```
 
-The common function can be found in: [DeviceBase](API-Common.md#Devicebase) and [MotorBase](API-Motorbase).
+The common function can be found in: [DeviceBase](API-Common.md#Devicebase) and [MotorBase](API-Motorbase.md).
 
 ## `__init__`
 ```python

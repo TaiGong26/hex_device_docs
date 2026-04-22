@@ -27,7 +27,7 @@
 
 ## Overview
 
-The `Hands` class inherits from [`OptionalDeviceBase`](API-Common.md#optionaldevicebase) and [`MotorBase`](API-Motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
+The `Hands` class inherits from [`OptionalDeviceBase`](API-Common.md#optionaldevicebase) and [`MotorBase`](API-Motorbase.md), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
 - `SdtHandGp100`: GP100 hand type
@@ -198,7 +198,7 @@ print(f"Current torques: {summary['motor_torques']}")
 
 ## Inherited Methods
 
-The `Hands` class inherits all methods from `OptionalDeviceBase` and [`MotorBase`](API-MotorBase), including:
+The `Hands` class inherits all methods from `OptionalDeviceBase` and [`MotorBase`](API-MotorBase.md), including:
 
 ### From OptionalDeviceBase:
 - `get_device_summary()` - Get device status

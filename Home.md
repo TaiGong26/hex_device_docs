@@ -6,7 +6,7 @@ Welcome to [HEX Device Python Library](https://github.com/hexfellow/hex_device_p
 
 ### Installation
 
-Please refer to our [Installation Guide](Installation-Guide) for detailed installation steps.
+Please refer to our [Installation Guide](Installation-Guide.md) for detailed installation steps.
 
 ### Basic Usage
 
@@ -33,9 +33,9 @@ Please checkout the [test/main.py](https://github.com/hexfellow/hex_device_pytho
 
 ## 📚 Documentation Navigation
 
-- **[Installation Guide](Installation-Guide)** - Detailed installation steps and environment configuration
-- **[Function Details](API-List)** - Complete API function documentation
-- **[Change Log](Change-Log)** - Record the modifications and development plans of each version
+- **[Installation Guide](Installation-Guide.md)** - Detailed installation steps and environment configuration
+- **[Function Details](API-List.md)** - Complete API function documentation
+- **[Change Log](Change-Log.md)** - Record the modifications and development plans of each version
 
 ## 🎯 Supported Device Types
 
@@ -51,7 +51,7 @@ Currently supports the following robot types:
 
 If you encounter problems during usage:
 
-1. Check the [Function Details Documentation](API-List) to understand API usage
+1. Check the [Function Details Documentation](API-List.md) to understand API usage
 2. Ensure you are using **public** function interfaces
 3. Check device connections and WebSocket configuration
 4. Create an `issue`

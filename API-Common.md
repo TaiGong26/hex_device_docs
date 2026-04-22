@@ -1,11 +1,11 @@
 # HexDevice Common API Documentation
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
-
+ -->
 ## Table of Contents
 
 1. [HexDeviceApi](#hexdeviceapi)
@@ -228,7 +228,7 @@ The `MotorBase` class provides common motor control functionality for devices wi
 - Temperature monitoring
 
 ## Documentation
-For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase).
+For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase.md).
 
 # OptionalDeviceBase
 

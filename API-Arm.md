@@ -47,7 +47,7 @@
 
 ## Overview
 
-The `Arm` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+The `Arm` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
 
 ## Supported Robot Types
 
@@ -68,7 +68,7 @@ The `Arm` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorB
 class Arm(DeviceBase, MotorBase):
 ```
 
-The common function can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase).
+The common function can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md).
 
 ## `__init__`
 ```python
@@ -720,7 +720,7 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `get_motor_status(motor_index, pop)` - Get detailed status for specified motor
 - `flush_motor_data()` - Clear all motor data queues
 
-For detailed documentation of these methods, see [MotorBase](API-Motorbase).
+For detailed documentation of these methods, see [MotorBase](API-Motorbase.md).
 
 **Examples:**
 ```python

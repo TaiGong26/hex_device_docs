@@ -17,21 +17,21 @@
 - **[DeviceBase](API-Common.md#Devicebase)** - Device base class providing common device operations
   - Basic Control: Start/stop control
   - Status Management: Device status retrieval
-- **[MotorBase](API-Motorbase)** - Motor base class providing common motor control
+- **[MotorBase](API-Motorbase.md)** - Motor base class providing common motor control
   - Motor Control: Speed control, position control
   - Status Monitoring: Motor status retrieval
 - **[OptionalDeviceBase](API-Common.md#OptionalDeviceBase)** - Optional device base class
   - Auxiliary Device Management: Device status retrieval
 
 ### Chassis Devices
-- **[Chassis](API-Chassis)** - Chassis control supporting multiple robot types
+- **[Chassis](API-Chassis.md)** - Chassis control supporting multiple robot types
   - Motion Control: Speed control, motor control
   - Status Monitoring: Odometry, battery information, safety status
   - Advanced Features: Multiple robot type support, zero impedance mode
   - Safety Features: Parking stop, timeout detection
 
 ### Arm Devices
-- **[Arm](API-Arm)** - Arm control supporting multiple arm types
+- **[Arm](API-Arm.md)** - Arm control supporting multiple arm types
   - Joint Control: Position control, speed control
   - End Effector: Position and orientation control
   - Advanced Features: Free drag, gravity compensation, MIT control
@@ -39,26 +39,26 @@
   - Safety Features: Collision detection, emergency stop
 
 ### Hand Devices
-- **[Hands](API-Hands)** - Hand device control
+- **[Hands](API-Hands.md)** - Hand device control
   - Grasp Control: Open/close control, force control
   - Status Monitoring: Hand status retrieval
-- **[SdtHello](API-Sdthello)** - SDT Hello device control
+- **[SdtHello](API-Sdthello.md)** - SDT Hello device control
   - Basic Control: Device start/stop
   - Status Monitoring: Device status retrieval
 
 ### Lift Mechanisms
-- **[Linear](API-Linear)** - Linear lift mechanism control
+- **[Linear](API-Linear.md)** - Linear lift mechanism control
   - Position Control: Target position setting
   - Status Monitoring: Current position retrieval
-- **[Zeta](API-Zeta)** - Zeta lift mechanism control
+- **[Zeta](API-Zeta.md)** - Zeta lift mechanism control
   - Position Control: Target position setting
   - Status Monitoring: Current position retrieval
 
 ### Other Devices
-- **[Imu](API-Imu)** - Inertial Measurement Unit
+- **[Imu](API-Imu.md)** - Inertial Measurement Unit
   - Data Acquisition: Acceleration, angular velocity, attitude
   - Data Parsing: Raw data processing
-- **[Gamepad](API-Gamepad)** - Gamepad
+- **[Gamepad](API-Gamepad.md)** - Gamepad
   - Input Processing: Button status, joystick position
   - Event Monitoring: Input event handling
 
