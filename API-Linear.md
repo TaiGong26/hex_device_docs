@@ -194,6 +194,8 @@ print(f"Pulse per meter: {ppr}")
 ```python
 def motor_command(self, command_type: CommandType, values: Union[bool, float, np.ndarray]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Set motor command for the lift. Supports POSITION and BRAKE command types.
 
 **Parameters:**

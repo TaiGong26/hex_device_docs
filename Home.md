@@ -40,12 +40,39 @@ Please checkout the [test/main.py](https://github.com/hexfellow/hex_device_pytho
 ## 🎯 Supported Device Types
 
 Currently supports the following robot types:
-- **RtArk2Lr1**: Ark2 vehicle
-- **RtArmArcherD6Y_P1**: Archer robotic arm
-- **SdtHandGp100**: GP100 hands
-- **RtMaverX4D**: Maver X4D chassis
-- **RtMaverL4D**: Maver L4D chassis
-- **RtTriggerA3Lr1**: Trigger A3LR1 chassis
+
+**Chassis:**
+- `RtArk2Lr1`: Ark2 vehicle
+- `RtMaverX4D`: Maver X4D chassis
+- `RtMaverL4D`: Maver L4D chassis
+- `RtTriggerA3Lr1`: Trigger A3LR1 chassis
+
+**Arm:**
+- `RtArmSaberD6x`: Saber 6-DOF arm
+- `RtArmSaberD7x`: Saber 7-DOF arm
+- `RtArmArcherD6Y_P1`: Archer 6-DOF arm
+- `RtArmArcherY6L_V1`: Archer long arm
+- `RtArmArcherY6_H1`: Archer high-load arm
+- `RtArmFireflyY6_H1`: Firefly high-speed arm
+- `RtHelloArcherY6_H1`: Hello Archer collaborative arm
+- `RtHelloFireflyY6_H1`: Hello Firefly collaborative arm
+- `RtArmArcherX7h1`: Archer 7-DOF high-precision arm
+
+**Linear Lift:**
+- `RtIotaP1`: Iota P1 lift
+- `RtIotaVc1`: Iota VC1 lift
+
+**Zeta Lift:**
+- `RtZetaVc2`: Zeta VC2 rotating lift
+
+**Hands:**
+- `SdtHandGp100`: GP100 hand
+- `SdtHandGp80G1`: GP80G1 hand
+- `SdtHandGr100`: GR100 hand
+
+**Optional Devices:**
+- `SdtGamepad`: Gamepad controller
+- `SdtImuY200`: IMU sensor
 
 ## 🤝 Getting Help
 

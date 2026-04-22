@@ -134,6 +134,8 @@ arm.command_timeout_check(False)
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Sets robotic arm motor commands with automatic validation for position and velocity commands.  
 > **Warning!!!!**Only one command can be set at the same time.
 

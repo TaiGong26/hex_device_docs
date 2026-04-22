@@ -568,6 +568,18 @@ Sets motor commands for the device, supporting five command types: BRAKE, SPEED,
   - TORQUE: `List[float]` - target torques (Nm)
   - MIT: `List[MitMotorCommand]` - MIT commands with position, speed, torque, kp, kd
 
+**Command Support by Device:**
+
+| Command | Arm | Chassis | ZetaLift | LinearLift | Hands |
+|---------|-----|---------|----------|------------|-------|
+| BRAKE | ✓ | ✓ | ✓ | ✓ | ✓ |
+| SPEED | ✓ | ✓ | ✓ | ✗ | ✓ |
+| POSITION | ✓ | ✗ | ✓ | ✓ | ✓ |
+| TORQUE | ✓* | ✗ | ✗ | ✗ | ✓ |
+| MIT | ✓* | ✗ | ✗ | ✗ | ✓ |
+
+*Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.*
+
 Examples:
 ```python
 from hex_device.motor_base import CommandType, MitMotorCommand
@@ -588,7 +600,6 @@ device.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
 motor.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
 
 # set mit command
-# Using numpy arrays to construct MIT commands
 mit_commands = device.construct_mit_command(
     np.array([-0.3, -1.48, 2.86, 0.0, 0.0, 0.0]),
     np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
@@ -597,16 +608,6 @@ mit_commands = device.construct_mit_command(
     np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
 )
 
-# Using lists (alternative syntax)
-mit_commands = device.construct_mit_command(
-    [0.3, -1.48, 2.86, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [150.0, 150.0, 150.0, 150.0, 39.0, 39.0],
-    [12.0, 12.0, 12.0, 12.0, 0.8, 0.8]
-)
-
-# Use with motor_command
 device.motor_command(CommandType.MIT, mit_commands)
 ```
 
@@ -669,15 +670,6 @@ mit_commands = device.construct_mit_command(
     np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
     np.array([150.0, 150.0, 150.0, 150.0, 39.0, 39.0]),
     np.array([12.0, 12.0, 12.0, 12.0, 0.8, 0.8])
-)
-
-# Using lists (alternative syntax)
-mit_commands = device.construct_mit_command(
-    [0.3, -1.48, 2.86, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [150.0, 150.0, 150.0, 150.0, 39.0, 39.0],
-    [12.0, 12.0, 12.0, 12.0, 0.8, 0.8]
 )
 
 # Use with motor_command

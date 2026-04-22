@@ -217,6 +217,8 @@ print(f"Position limits: min={summary['min_pos']}, max={summary['max_pos']}")
 ```python
 def motor_command(self, command_type: CommandType, values: List[float]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Sets motor command for the ZetaLift. This method extends the base `motor_command` from MotorBase and also records the command timestamp for timeout checking.
 
 **Parameters:**

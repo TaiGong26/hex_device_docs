@@ -316,6 +316,8 @@ print("Chassis disabled (zero resistance)")
 ```python
 def motor_command(self, command_type: CommandType, values: List[float]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Sets chassis motor commands, only available in non-simple control mode.
 
 **Parameters:**
