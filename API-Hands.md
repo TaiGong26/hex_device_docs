@@ -1,11 +1,12 @@
 # Hands API Documentation
 
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
-
+ -->
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -22,12 +23,11 @@
 6. [Summary Methods](#summary-methods)
    - [get_hands_summary](#get_hands_summary)
 7. [Inherited Methods](#inherited-methods)
-8. [Best Practices](#best-practices)
-9. [Troubleshooting](#troubleshooting)
+
 
 ## Overview
 
-The `Hands` class inherits from [OptionalDeviceBase](API-Common#optionaldevicebase) and [MotorBase](API-Common#motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
+The `Hands` class inherits from [`OptionalDeviceBase`](API-Common#optionaldevicebase) and [`MotorBase`](API-Motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
 - `SdtHandGp100`: GP100 hand type
@@ -41,7 +41,7 @@ class Hands(OptionalDeviceBase, MotorBase):
 
 ## `__init__`
 ```python
-def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
+def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False,logger):
 ```
 Initializes a Hands device for robotic hand control.
 
@@ -60,7 +60,6 @@ Initializes a Hands device for robotic hand control.
 # Usually called internally by HexDeviceApi when creating hand devices
 # Users typically don't need to call this directly
 ```
-
 ## command_timeout_check
 ```python
 def command_timeout_check(self, check_or_not: bool = True):
@@ -199,7 +198,7 @@ print(f"Current torques: {summary['motor_torques']}")
 
 ## Inherited Methods
 
-The `Hands` class inherits all methods from `OptionalDeviceBase` and `MotorBase`, including:
+The `Hands` class inherits all methods from `OptionalDeviceBase` and [`MotorBase`](API-MotorBase), including:
 
 ### From OptionalDeviceBase:
 - `get_device_summary()` - Get device status
@@ -235,6 +234,8 @@ for i in range(hand.motor_count):
         print(f"Motor {i} has error")
 ```
 
+
+<!-- 
 ## Best Practices
 
 1. **Use position commands for simple control**
@@ -269,3 +270,4 @@ for i in range(hand.motor_count):
 4. **Debugging Tips**
    - Enable verbose logging to see detailed communication
    - Test with basic commands before complex operations
+ -->

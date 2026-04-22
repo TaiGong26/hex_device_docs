@@ -1,10 +1,12 @@
 # SdtHello API Documentation
 
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
 
 ## Table of Contents
 
@@ -14,12 +16,10 @@
 4. [Data Methods](#data-methods)
    - [has_new_data](#has_new_data)
    - [get_simple_motor_status](#get_simple_motor_status)
-   - [get_device_status](#get_device_status)
 5. [Control Methods](#control-methods)
    - [set_rgb_stripe](#set_rgb_stripe)
 6. [Inherited Methods](#inherited-methods)
-7. [Best Practices](#best-practices)
-8. [Troubleshooting](#troubleshooting)
+
 
 ## Overview
 

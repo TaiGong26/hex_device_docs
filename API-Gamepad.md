@@ -1,10 +1,11 @@
 # Gamepad API Documentation
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
 
 ## Table of Contents
 
@@ -13,9 +14,9 @@
 3. [Initialization](#__init__)
 4. [Data Methods](#data-methods)
    - [get_gamepad_read](#get_gamepad_read)
+   - [get_gamepad_summary](#get_gamepad_summary)
 5. [Inherited Methods](#inherited-methods)
-6. [Best Practices](#best-practices)
-7. [Troubleshooting](#troubleshooting)
+
 
 ## Overview
 
@@ -197,6 +198,7 @@ if gamepad is not None:
     print(f"Device ID: {device_summary['device_id']}")
 ```
 
+<!-- 
 ## Best Practices
 
 ### General Recommendations
@@ -251,3 +253,4 @@ if gamepad is not None:
 3. **Test with simple data retrieval**
    - Start with basic `get_gamepad_read()` calls to verify functionality
 
+ -->
