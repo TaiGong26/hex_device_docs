@@ -1,11 +1,11 @@
 # MotorBase
-
+<!-- 
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
-
+ -->
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -54,14 +54,12 @@
     - [motor_command](#motor_command)
     - [mit_motor_command](#mit_motor_command)
     - [construct_mit_command](#construct_mit_command)
-16. [Data Update Methods](#data-update-methods)
-    - [update_motor_data](#update_motor_data)
-17. [Summary Methods](#summary-methods)
+16. [Summary Methods](#summary-methods)
     - [get_motor_summary](#get_motor_summary)
-18. [Utility Methods](#utility-methods)
+17. [Utility Methods](#utility-methods)
     - [flush_motor_data](#flush_motor_data)
-19. [Best Practices](#best-practices)
-20. [Troubleshooting](#troubleshooting)
+18. [Best Practices](#best-practices)
+19. [Troubleshooting](#troubleshooting)
 
 ## Overview
 
