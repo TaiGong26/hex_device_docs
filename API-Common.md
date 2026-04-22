@@ -1,9 +1,19 @@
-**Guide：**
-- [HexDeviceApi](#HexDeviceApi)
-- [DeviceBase](#Devicebase)
-- [OptionalDeviceBase](#OptionalDeviceBase)
+# HexDevice Common API Documentation
 
-# HexDeviceApi
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [HexDeviceApi](#hexdeviceapi)
+2. [DeviceBase](#devicebase)
+3. [OptionalDeviceBase](#optionaldevicebase)
+4. [MotorBase](#motorbase)
+
+## HexDeviceApi
 
 ## `__init__`
 ```python
@@ -215,40 +225,10 @@ The `MotorBase` class provides common motor control functionality for devices wi
 ## Key Features
 - Motor status monitoring
 - Common motor control operations
-- Timestamp synchronization
+- Temperature monitoring
 
-## Methods
-
-### get_motor_status
-```python
-def get_motor_status(self) -> List[Dict[str, Any]]:
-```
-Gets the status of all motors.
-
-**Returns:**
-- `List[Dict[str, Any]]`: List of motor status dictionaries, each containing:
-  - `position`: Motor position
-  - `speed`: Motor speed
-  - `torque`: Motor torque
-  - `temperature`: Motor temperature
-
-### get_motor_count
-```python
-def get_motor_count(self) -> int:
-```
-Gets the number of motors.
-
-**Returns:**
-- `int`: Number of motors
-
-### get_timestamp
-```python
-def get_timestamp(self) -> Timestamp:
-```
-Gets the current timestamp.
-
-**Returns:**
-- `Timestamp`: Current timestamp object
+## Documentation
+For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase).
 
 # OptionalDeviceBase
 

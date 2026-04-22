@@ -77,19 +77,19 @@ Examples:
 # Usually called internally by HexDeviceApi
 from hex_device.generated import public_api_types_pb2
 
-# For Mark2 chassis (2 motors)
-chassis_mark2 = Chassis(
+# For Ark2 chassis (2 motors)
+chassis_ark2 = Chassis(
     motor_count=2, 
-    robot_type=public_api_types_pb2.RobotType.RtArk2LrDriver,
+    robot_type=public_api_types_pb2.RobotType.RtArk2Lr1,
     proto_version=(1, 0),
-    name="MyChassisMark2", 
+    name="MyChassisArk2", 
     control_hz=500
 )
 
-# For PCW vehicle (8 motors)
+# For Maver X4D chassis (8 motors)
 chassis_maver = Chassis(
     motor_count=8, 
-    robot_type=public_api_types_pb2.RobotType.RtPcwVehicle,
+    robot_type=public_api_types_pb2.RobotType.RtMaverX4D,
     proto_version=(1, 0),
     name="MyChassisMaver", 
     control_hz=500
@@ -342,7 +342,7 @@ def set_vehicle_speed(self, speed_x: float, speed_y: float, speed_z: float):
 ```
 Sets the vehicle XYZ speed, only available in simple control mode. 
 
-**Note:** For Mark2 chassis (`RtArk2LrDriver`), `speed_y` is always filtered to 0 as it only supports forward/backward and rotation movements.
+**Note:** For Ark2 chassis (`RtArk2Lr1`), `speed_y` is always filtered to 0 as it only supports forward/backward and rotation movements.
 
 Examples:
 ```python
@@ -397,86 +397,43 @@ print(f"Vehicle position: {summary['vehicle_position']}")
 
 ## Best Practices
 
-### General Recommendations
-
 1. **Always call `stop()` before exiting**
-   - Failure to call `stop()` may cause the chassis to enter a connection timeout error state
-   - This ensures proper disconnection and prevents potential issues on next connection
+   - Ensures proper disconnection and prevents timeout errors
 
-2. **Use proper error handling**
-   - Implement try-except blocks around chassis operations
-   - Handle timeouts and connection errors gracefully
-
-3. **Maintain consistent command rate**
-   - For continuous control, send commands at least every 50ms to avoid timeouts
+2. **Maintain consistent command rate**
+   - Send commands at least every 50ms to avoid timeouts
    - The chassis has a 100ms timeout threshold
 
-4. **Check session holder before starting**
+3. **Check session holder before starting**
    - Use `get_session_holder()` to check if another controller is active
-   - Only call `start()` if no one else is controlling
 
-5. **Reset odometry bias when needed**
-   - Use `clear_odom_bias()` to set the current position as the origin
-   - This is especially useful before starting a new navigation task
+4. **Reset odometry bias when needed**
+   - Use `clear_odom_bias()` to set current position as origin
 
-### Performance Optimization
-
-1. **Use appropriate control frequency**
-   - The default 500Hz is suitable for most applications
-   - Adjust based on your specific requirements and system capabilities
-
-2. **Optimize data retrieval**
-   - Use `pop=True` for get_vehicle_speed and get_vehicle_position when processing data in order
+5. **Optimize data retrieval**
+   - Use `pop=True` when processing data in order
    - Use `pop=False` when you only need the latest value
-
-3. **Batch commands when possible**
-   - Group multiple motor commands together to reduce communication overhead
 
 ## Troubleshooting
 
-### Common Issues and Solutions
-
 1. **Command Timeout**
    - **Symptom**: `is_timeout()` returns True
-   - **Cause**: Commands not sent frequently enough (more than 100ms between commands)
-   - **Solution**: Increase command sending frequency, ensure network connection is stable
+   - **Solution**: Increase command sending frequency, check network connection
 
 2. **Cannot Start Control**
    - **Symptom**: `start()` has no effect
-   - **Cause**: Another controller is already active (`get_session_holder()` returns non-zero)
-   - **Solution**: Wait for the other controller to release control or restart the chassis
+   - **Solution**: Wait for other controller to release control or restart chassis
 
 3. **Vehicle Not Moving**
    - **Symptom**: `set_vehicle_speed()` called but vehicle doesn't move
-   - **Causes**:
-     - API control not initialized (`is_api_control_initialized()` returns False)
-     - Chassis in disabled state
-     - Speed values out of range
    - **Solution**: Call `start()` and `enable()`, check speed values
 
 4. **Inaccurate Odometry**
    - **Symptom**: Position values drift over time
-   - **Solution**: Call `clear_odom_bias()` periodically to reset the origin
+   - **Solution**: Call `clear_odom_bias()` periodically
 
-5. **Battery Issues**
-   - **Symptom**: Low battery warnings
-   - **Solution**: Check battery voltage with `get_battery_info()`, recharge as needed
-
-### Debugging Tips
-
-1. **Enable verbose logging**
-   - Set logging level to DEBUG to see detailed communication
-
-2. **Monitor chassis state**
+5. **Debugging Tips**
+   - Enable verbose logging to see detailed communication
    - Regularly check `get_base_state()` and `get_status_summary()`
-
-3. **Verify connection**
-   - Ensure WebSocket connection is stable
-   - Check for network interruptions
-
-4. **Check motor status**
-   - Monitor individual motor status through `get_status_summary()`
-
-5. **Test with simple commands**
-   - Start with basic movements to verify functionality before complex operations
+   - Test with simple commands before complex operations
 

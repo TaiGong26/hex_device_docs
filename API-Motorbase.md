@@ -41,6 +41,7 @@
     - [get_motor_driver_temperature](#get_motor_driver_temperature)
     - [get_motor_temperatures](#get_motor_temperatures)
     - [get_motor_temperature](#get_motor_temperature)
+    - [get_motor_warnings](#get_motor_warnings)
 13. [Voltage Methods](#voltage-methods)
     - [get_motor_voltage](#get_motor_voltage)
     - [get_motor_voltages](#get_motor_voltages)
@@ -378,7 +379,6 @@ Gets the driver temperature list of all motors (unit: degC). Always returns the 
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType
 temps = motor.get_motor_driver_temperatures()
 if temps is not None:
     for i, temp in enumerate(temps):
@@ -397,7 +397,6 @@ Gets the driver temperature of the specified motor (unit: degC). Always returns 
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType
 temp = motor.get_motor_driver_temperature(0)
 if temp is not None and temp > 80:
     print(f"Warning: Driver 0 overheating at {temp}degC")
@@ -411,7 +410,6 @@ Gets the temperature list of all motors (unit: degC). Always returns the latest 
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType
 temps = motor.get_motor_temperatures()
 if temps is not None:
     for i, temp in enumerate(temps):
@@ -430,10 +428,28 @@ Gets the temperature of the specified motor (unit: degC). Always returns the lat
 
 Examples:
 ```python
-from hex_device.motor_base import CommandType
 temp = motor.get_motor_temperature(0)
 if temp is not None and temp > 70:
     print(f"Warning: Motor 0 overheating at {temp}degC")
+```
+
+### get_motor_warnings
+```python
+def get_motor_warnings(self, motor_index: int) -> Optional[Dict[str, Any]]:
+```
+Gets the warning information for the specified motor.
+
+**Parameters:**
+- `motor_index` (int): Index of the motor
+
+**Returns:**
+- `Optional[Dict[str, Any]]`: Dictionary containing motor warning information, or None if no warnings
+
+Examples:
+```python
+warnings = motor.get_motor_warnings(0)
+if warnings is not None:
+    print(f"Motor 0 warnings: {warnings}")
 ```
 
 ## Voltage Methods
@@ -700,52 +716,34 @@ motor.flush_motor_data()
 
 ## Best Practices
 
-### General Recommendations
-
 1. **Use appropriate data retrieval methods**
-   - Use `pop=True` when processing data in order to avoid queue buildup
+   - Use `pop=True` when processing data in order
    - Use `pop=False` when you only need the latest value
 
 2. **Monitor motor health regularly**
    - Check temperatures and error codes periodically
-   - Implement warnings for abnormal conditions
 
 3. **Use proper command types**
    - Choose the appropriate command type for your use case
-   - MIT commands offer more precise control with PID gains
 
 4. **Handle None returns properly**
    - Always check if methods return None before processing data
-   - This indicates no data available or queue empty
 
-### Performance Optimization
-
-1. **Batch commands when possible**
-   - Group multiple motor commands to reduce communication overhead
-
-2. **Use numpy arrays for large data sets**
+5. **Use numpy arrays for large data sets**
    - Numpy arrays are more efficient for large motor counts
-
-3. **Set appropriate queue sizes**
-   - Adjust queue sizes based on your control frequency
 
 ## Troubleshooting
 
-### Common Issues and Solutions
-
 1. **Data Queue Empty**
    - **Symptom**: Methods return None
-   - **Cause**: No new data received or queues empty
    - **Solution**: Check connection and ensure data is being received
 
 2. **Motor Overheating**
    - **Symptom**: High temperature readings
-   - **Cause**: Excessive load or continuous high-power operation
    - **Solution**: Reduce load, increase cooling, or implement rest periods
 
 3. **Motor Error States**
    - **Symptom**: Error codes returned
-   - **Cause**: Various hardware or communication issues
    - **Solution**: Check error codes and refer to motor documentation
 
 4. **Command Not Executing**

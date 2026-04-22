@@ -1,9 +1,38 @@
+# ZetaLift API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Calibration Methods](#calibration-methods)
+   - [calibrate](#calibrate)
+   - [is_calibrated](#is_calibrated)
+5. [Control Methods](#control-methods)
+   - [set_move_speed](#set_move_speed)
+   - [get_joint_limits](#get_joint_limits)
+   - [get_angles](#get_angles)
+   - [set_angles](#set_angles)
+6. [State Methods](#state-methods)
+   - [get_state](#get_state)
+7. [Inherited Methods](#inherited-methods)
+8. [Best Practices](#best-practices)
+9. [Troubleshooting](#troubleshooting)
+
+## Overview
+
 The `ZetaLift` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing ZetaLift (rotating lift) status management and motor control. This class processes the `rotate_lift_status` field from APIUp messages.
 
 Supported robot types:
 - `RtZetaVc2`: Zeta Vc2 robot type
 
-# ZetaLift
+## Class Definition
 ```python
 class ZetaLift(DeviceBase, MotorBase):
 ```
@@ -40,8 +69,9 @@ Initiates the calibration process for the ZetaLift. This method sets the calibra
 ```python
 zeta_lift.calibrate()
 # Wait for calibration to complete
+import time
 while not zeta_lift.is_calibrated():
-    await asyncio.sleep(0.1)
+    time.sleep(0.1)
 ```
 
 ## set_move_speed
@@ -83,7 +113,7 @@ def get_joint_limits(self) -> Optional[List[List[float]]]:
 Gets the joint limits for all motors.
 
 **Returns:**
-- `Optional[List[List[float]]]`: Joint limits for each motor, or None if not available. Each motor's limits are in the format: `[min_pos, max_pos, min_vel, max_vel, min_acc, max_acc]`
+- `Optional[List[List[float]]]`: Joint limits, or None if not available. The list is in the format: `[[min_pos, max_pos], [min_vel, max_vel], [min_acc, max_acc]]`
   - `min_pos`, `max_pos`: Minimum and maximum position limits (pulses)
   - `min_vel`, `max_vel`: Minimum and maximum velocity limits (rad/s)
   - `min_acc`, `max_acc`: Minimum and maximum acceleration limits (rad/s²)

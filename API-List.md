@@ -17,7 +17,7 @@
 - **[DeviceBase](API-Common#Devicebase)** - Device base class providing common device operations
   - Basic Control: Start/stop control
   - Status Management: Device status retrieval
-- **[MotorBase](API-Common#motorbase)** - Motor base class providing common motor control
+- **[MotorBase](API-Motorbase)** - Motor base class providing common motor control
   - Motor Control: Speed control, position control
   - Status Monitoring: Motor status retrieval
 - **[OptionalDeviceBase](API-Common#OptionalDeviceBase)** - Optional device base class

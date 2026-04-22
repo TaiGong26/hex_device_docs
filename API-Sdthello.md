@@ -1,9 +1,34 @@
+# SdtHello API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Data Methods](#data-methods)
+   - [has_new_data](#has_new_data)
+   - [get_simple_motor_status](#get_simple_motor_status)
+   - [get_device_status](#get_device_status)
+5. [Control Methods](#control-methods)
+   - [set_rgb_stripe](#set_rgb_stripe)
+6. [Inherited Methods](#inherited-methods)
+7. [Best Practices](#best-practices)
+8. [Troubleshooting](#troubleshooting)
+
+## Overview
+
 The `SdtHello` class inherits from [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing Hello device data reading and RGB stripe control. This class processes the optional `hello1j1t4b_status` field from APIUp messages.
 
 Supported device types:
 - `SdtHello1J1T4BV1`: Hello1J1T4B V1 device type
 
-# SdtHello
+## Class Definition
 ```python
 class SdtHello(OptionalDeviceBase):
 ```

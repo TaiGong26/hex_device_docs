@@ -1,10 +1,38 @@
-# LinearLift
+# LinearLift API Documentation
+
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Data Methods](#data-methods)
+   - [has_new_data](#has_new_data)
+   - [get_move_speed](#get_move_speed)
+   - [get_motor_positions](#get_motor_positions)
+   - [get_lift_data](#get_lift_data)
+   - [get_lift_angles](#get_lift_angles)
+5. [Control Methods](#control-methods)
+   - [set_move_speed](#set_move_speed)
+   - [set_position](#set_position)
+6. [Inherited Methods](#inherited-methods)
+7. [Best Practices](#best-practices)
+8. [Troubleshooting](#troubleshooting)
+
+## Overview
 
 The `LinearLift` class inherits from [DeviceBase](API-Common#Devicebase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
 
 ## Supported Robot Types
 - `RtIotaP1`: Iota P1 Linear Lift
 - `RtIotaVc1`: Iota Vc1 Linear Lift
+
+## Class Definition
 
 ```python
 class LinearLift(DeviceBase):

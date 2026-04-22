@@ -32,12 +32,15 @@
    - [get_arm_name](#get_arm_name)
 7. [Advanced Control Methods](#advanced-control-methods)
    - [end_effector_control](#end_effector_control)
-   - [joint_position_control](#joint_position_control)
+   - [mit_control](#mit_control)
+   - [construct_mit_command](#construct_mit_command)
    - [enable_free_drag](#enable_free_drag)
+   - [enable_zero_current_control](#enable_zero_current_control)
    - [compensated_mit_control](#compensated_mit_control)
 8. [Validation Methods](#validation-methods)
    - [validate_joint_positions](#validate_joint_positions)
    - [validate_joint_velocities](#validate_joint_velocities)
+   - [is_timeout](#is_timeout)
 9. [Configuration Management](#configuration-management)
    - [reload_arm_config_from_dict](#reload_arm_config_from_dict)
 10. [Motion History Management](#motion-history-management)
@@ -457,6 +460,27 @@ print("Free drag mode enabled. You can now manually move the arm.")
 # To exit free drag mode, send another control command, such as position or speed
 ```
 
+### enable_zero_current_control
+```python
+def enable_zero_current_control(self):
+```
+Enables zero current control mode for the arm.
+
+**Notes:**
+- Zero current control mode disables torque output, allowing the arm to move freely
+- Use this mode when you want to manually move the arm without any resistance
+- Be cautious when using this mode as the arm will not maintain its position
+
+Examples:
+```python
+# Enable zero current control mode
+arm.enable_zero_current_control()
+print("Zero current control mode enabled. Arm can now be moved freely.")
+
+# Note: In zero current mode, the arm will not hold its position
+# Use gravity compensation if you need to maintain position while allowing movement
+```
+
 ### compensated_mit_control
 ```python
 def compensated_mit_control(self, mit_commands: List[MitMotorCommand], gravity_acc: List[float]):
@@ -524,6 +548,23 @@ target_velocities = [1.0, -2.0, 3.0, 0.5, -1.5, 0.8]
 safe_velocities = arm.validate_joint_velocities(target_velocities, dt=0.002)
 print(f"Original: {target_velocities}")
 print(f"Validated: {safe_velocities}")
+```
+
+### is_timeout
+```python
+def is_timeout(self) -> bool:
+```
+Checks if the arm control has timed out.
+
+**Returns:**
+- `bool`: True if control has timed out, False otherwise
+
+Examples:
+```python
+if arm.is_timeout():
+    print("Arm control has timed out")
+else:
+    print("Arm control is active")
 ```
 
 ## Configuration Management
@@ -757,81 +798,42 @@ if arm is not None:
 
 ## Best Practices
 
-### General Recommendations
-
 1. **Always call `stop()` before exiting**
-   - Failure to call `stop()` may cause the arm to enter a connection timeout error state
-   - This ensures proper disconnection and prevents potential issues on next connection
+   - Ensures proper disconnection and prevents timeout errors
 
-2. **Use proper error handling**
-   - Implement try-except blocks around arm operations
-   - Handle timeouts and connection errors gracefully
-
-3. **Use automatic validation**
+2. **Use automatic validation**
    - Take advantage of automatic position and velocity validation
-   - This prevents sending invalid commands to the arm
+   - Prevents sending invalid commands to the arm
 
-4. **Check session holder before starting**
+3. **Check session holder before starting**
    - Use `get_session_holder()` to check if another controller is active
-   - Only call `start()` if no one else is controlling
 
-5. **Monitor parking stop status**
+4. **Monitor parking stop status**
    - Regularly check `get_parking_stop_detail()` to detect issues
-   - Clear remotely clearable stops when appropriate
 
-### Performance Optimization
-
-1. **Use appropriate control frequency**
-   - The default 500Hz is suitable for most applications
-   - Adjust based on your specific requirements
-
-2. **Batch commands when possible**
-   - Group multiple motor commands together to reduce communication overhead
-
-3. **Use MIT commands for precise control**
+5. **Use MIT commands for precise control**
    - MIT commands offer more precise control with PID gains
    - Enable MIT mode with `enable_mit()` when needed
 
 ## Troubleshooting
 
-### Common Issues and Solutions
-
 1. **Cannot Start Control**
    - **Symptom**: `start()` has no effect
-   - **Cause**: Another controller is already active (`get_session_holder()` returns non-zero)
-   - **Solution**: Wait for the other controller to release control or restart the arm
+   - **Solution**: Wait for other controller to release control or restart arm
 
 2. **Motor Count Mismatch**
    - **Symptom**: `check_motor_count_match()` returns False
-   - **Cause**: Configured motor count differs from actual motor count
-   - **Solution**: Verify the robot type and check arm configuration
+   - **Solution**: Verify robot type and check arm configuration
 
 3. **Parking Stop**
    - **Symptom**: Arm stops unexpectedly
-   - **Cause**: Various safety conditions triggered
-   - **Solution**: Check `get_parking_stop_detail()` for the reason and clear if remotely clearable
+   - **Solution**: Check `get_parking_stop_detail()` for reason and clear if possible
 
 4. **Command Timeout**
    - **Symptom**: Arm enters timeout state
-   - **Cause**: Commands not sent frequently enough
-   - **Solution**: Increase command sending frequency or adjust timeout settings with `command_timeout_check()`
+   - **Solution**: Increase command sending frequency
 
-5. **Joint Limit Errors**
-   - **Symptom**: Position commands rejected
-   - **Cause**: Target position outside joint limits
-   - **Solution**: Use `validate_joint_positions()` before sending commands or `get_joint_limits()` to check limits
-
-### Debugging Tips
-
-1. **Enable verbose logging**
-   - Set logging level to DEBUG to see detailed communication
-
-2. **Monitor arm state**
+5. **Debugging Tips**
+   - Enable verbose logging to see detailed communication
    - Regularly check `get_arm_config()` and `get_arm_series()`
-
-3. **Verify connection**
-   - Ensure WebSocket connection is stable
-   - Check for network interruptions
-
-4. **Test with simple commands**
-   - Start with basic position commands to verify functionality
+   - Test with simple commands before complex operations

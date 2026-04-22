@@ -202,11 +202,10 @@ print(f"Current torques: {summary['motor_torques']}")
 The `Hands` class inherits all methods from `OptionalDeviceBase` and `MotorBase`, including:
 
 ### From OptionalDeviceBase:
-- `has_new_data()` - Check for new data
 - `get_device_summary()` - Get device status
-- `supports_message_type()` - Check message type support
 
 ### From MotorBase:
+- `has_new_data()` - Check for new data
 - `get_motor_position(motor_index)` - Get individual motor position
 - `get_motor_positions()` - Get all motor positions
 - `get_motor_velocity(motor_index)` - Get individual motor velocity
@@ -238,57 +237,35 @@ for i in range(hand.motor_count):
 
 ## Best Practices
 
-### General Recommendations
-
 1. **Use position commands for simple control**
    - Position commands are automatically limited to hand joint limits
-   - This provides safer control for basic operations
 
 2. **Use appropriate step size for smooth control**
-   - Smaller steps provide smoother but slower movement
-   - Larger steps provide faster but less smooth movement
+   - Smaller steps for smoother movement, larger steps for faster movement
 
 3. **Monitor motor status**
    - Check for error states regularly
-   - Handle error conditions gracefully
 
 4. **Use appropriate control frequency**
    - The default 250Hz is suitable for most hand control applications
 
-### Performance Optimization
-
-1. **Batch commands when possible**
+5. **Batch commands when possible**
    - Group multiple motor commands to reduce communication overhead
-
-2. **Use numpy arrays for large data sets**
-   - Numpy arrays are more efficient for processing
 
 ## Troubleshooting
 
-### Common Issues and Solutions
-
 1. **Hand Not Responding**
    - **Symptom**: Commands have no effect
-   - **Cause**: API control not initialized
    - **Solution**: Ensure proper initialization and connection
 
 2. **Motor Error State**
    - **Symptom**: Motor state returns "error"
-   - **Cause**: Various hardware issues
    - **Solution**: Check motor connections and configuration
 
 3. **Position Command Not Working**
    - **Symptom**: Position commands rejected
-   - **Cause**: Target position outside joint limits
    - **Solution**: Check joint limits with `get_joint_limits()`
 
-### Debugging Tips
-
-1. **Enable verbose logging**
-   - Set logging level to DEBUG to see detailed communication
-
-2. **Monitor hand status**
-   - Regularly check `get_hands_summary()`
-
-3. **Test with simple commands**
-   - Start with basic position commands to verify functionality
+4. **Debugging Tips**
+   - Enable verbose logging to see detailed communication
+   - Test with basic commands before complex operations
