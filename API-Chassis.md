@@ -391,7 +391,6 @@ Examples:
 ```python
 summary = chassis.get_status_summary()
 print(f"Base state: {summary['base_state']}")
-print(f"Motor count: {summary['motor_count']}")
 print(f"Battery voltage: {summary['battery_info']['voltage']}V")
 print(f"Vehicle position: {summary['vehicle_position']}")
 ```

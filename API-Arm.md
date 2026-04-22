@@ -693,6 +693,10 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `target_positions` - Get all motor target positions (rad)
 - `target_velocities` - Get all motor target velocities (rad/s)
 - `target_torques` - Get all motor target torques (Nm)
+- `cache_motion_data` - Get all motor cache motion data (positions, velocities, torques)
+- `cache_positions` - Get all motor cache positions (rad)
+- `cache_velocities` - Get all motor cache velocities (rad/s)
+- `cache_torques` - Get all motor cache torques (Nm)
 - `has_new_data()` - Check if there is new motor data
 - `get_motor_error_codes()` - Get all motor error codes
 - `get_motor_state(motor_index)` - Get specified motor state

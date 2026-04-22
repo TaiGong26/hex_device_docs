@@ -55,7 +55,7 @@ Examples:
 
 ## get_gamepad_read
 ```python
-def get_gamepad_read(self) -> Optional[public_api_types_pb2.GamepadRead]:
+def get_gamepad_read(self) -> public_api_types_pb2.GamepadRead:
 ```
 Gets the current gamepad read data.
 

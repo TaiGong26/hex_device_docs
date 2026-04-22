@@ -26,17 +26,17 @@
 
 ## Overview
 
-The `SdtHello` class inherits from [OptionalDeviceBase](API-Common.md#OptionalDeviceBase), primarily implementing Hello device data reading and RGB stripe control. This class processes the optional `hello1j1t4b_status` field from APIUp messages.
+The `SdtHello` class inherits from [`OptionalDeviceBase`](API-Common.md#OptionalDeviceBase) and [`MotorBase`](API-Motorbase.md), primarily implementing Hello device data reading and RGB stripe control. This class processes the optional `hello1j1t4b_status` field from APIUp messages.
 
 Supported device types:
 - `SdtHello1J1T4BV1`: Hello1J1T4B V1 device type
 
 ## Class Definition
 ```python
-class SdtHello(OptionalDeviceBase):
+class SdtHello(OptionalDeviceBase, MotorBase):
 ```
 
-The common function can be found in: [OptionalDeviceBase](API-Common.md#OptionalDeviceBase).
+The common function can be found in: [OptionalDeviceBase](API-Common.md#OptionalDeviceBase) and [MotorBase](API-Motorbase.md).
 
 ## `__init__`
 ```python
@@ -87,11 +87,11 @@ Gets simple Hello device status including joystick, trigger, and button states.
 
 **Returns:**
 - `Optional[Dict[str, Any]]`: Dictionary containing Hello status with keys:
-  - `pos`: List of position values [trigger, joystick_x, joystick_y, btn_a, btn_b, btn_x, btn_y]
+  - `pos`: List of position values [trigger, joystick_x, joystick_y, btn_z, btn_w, btn_x, btn_y]
     - `trigger`: Trigger value (float)
     - `joystick_x`: Joystick X axis value (float)
     - `joystick_y`: Joystick Y axis value (float)
-    - `btn_a`, `btn_b`, `btn_x`, `btn_y`: Button states (1.0 for pressed, -1.0 for not pressed)
+    - `btn_z`, `btn_w`, `btn_x`, `btn_y`: Button states (1.0 for pressed, -1.0 for not pressed)
   - `vel`: List of velocity values (all zeros, not used for Hello device)
   - `eff`: List of effort values (all zeros, not used for Hello device)
   - `ts`: Timestamp dictionary with 's' and 'ns' keys
@@ -103,20 +103,20 @@ if status is not None:
     trigger = status['pos'][0]
     joystick_x = status['pos'][1]
     joystick_y = status['pos'][2]
-    btn_a = status['pos'][3]
-    print(f"Trigger: {trigger}, Joystick: ({joystick_x}, {joystick_y}), Button A: {btn_a}")
+    btn_z = status['pos'][3]
+    print(f"Trigger: {trigger}, Joystick: ({joystick_x}, {joystick_y}), Button Z: {btn_z}")
 ```
 
 ## set_rgb_stripe_command
 ```python
-def set_rgb_stripe_command(self, r: list[int], g: list[int], b: list[int]):
+def set_rgb_stripe_command(self, r: Union[np.ndarray, list[int]], g: Union[np.ndarray, list[int]], b: Union[np.ndarray, list[int]]):
 ```
 Sets RGB stripe command to control the LED colors on the Hello device.
 
 **Parameters:**
-- `r` (list[int]): List of red values (0-255) for each LED
-- `g` (list[int]): List of green values (0-255) for each LED
-- `b` (list[int]): List of blue values (0-255) for each LED
+- `r` (Union[np.ndarray, list[int]]): List of red values (0-255) for each LED
+- `g` (Union[np.ndarray, list[int]]): List of green values (0-255) for each LED
+- `b` (Union[np.ndarray, list[int]]): List of blue values (0-255) for each LED
 
 **Raises:**
 - `ValueError`: If the RGB lists have different lengths
@@ -181,10 +181,24 @@ print(f"Control frequency: {summary['control_hz']} Hz")
 
 ## Inherited Methods
 
-The `SdtHello` class inherits all methods from `OptionalDeviceBase`, including:
+The `SdtHello` class inherits all methods from `OptionalDeviceBase` and `MotorBase`:
 
 ### From OptionalDeviceBase:
 - `get_device_summary()` - Get device status summary (name and device_id)
+
+### From MotorBase:
+- `has_new_data()` - Check if new data is available
+- `get_motor_position(motor_index)` - Get position of a specific motor
+- `get_motor_positions()` - Get positions of all motors
+- `get_motor_velocity(motor_index)` - Get velocity of a specific motor
+- `get_motor_velocities()` - Get velocities of all motors
+- `get_motor_torque(motor_index)` - Get torque of a specific motor
+- `get_motor_torques()` - Get torques of all motors
+- `get_motor_state(motor_index)` - Get state of a specific motor
+- `get_motor_summary()` - Get motor status summary
+- `construct_mit_command()` - Construct MIT command from arrays
+- `get_motor_error_codes()` - Get motor error codes
+- `flush_motor_data()` - Clear motor data queues
 
 **Examples:**
 ```python
@@ -216,14 +230,14 @@ if hello is not None:
         trigger = status['pos'][0]
         joystick_x = status['pos'][1]
         joystick_y = status['pos'][2]
-        btn_a = status['pos'][3]
-        btn_b = status['pos'][4]
+        btn_z = status['pos'][3]
+        btn_w = status['pos'][4]
         btn_x = status['pos'][5]
         btn_y = status['pos'][6]
         
         print(f"Trigger: {trigger}")
         print(f"Joystick: ({joystick_x}, {joystick_y})")
-        print(f"Buttons: A={btn_a}, B={btn_b}, X={btn_x}, Y={btn_y}")
+        print(f"Buttons: Z={btn_z}, W={btn_w}, X={btn_x}, Y={btn_y}")
     
     # Set RGB stripe colors
     # Set first 3 LEDs to red, green, blue respectively

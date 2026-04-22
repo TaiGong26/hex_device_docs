@@ -691,7 +691,7 @@ Gets the motor group status summary, containing status information for all motor
   - `positions` (List[float]): Motor positions (rad)
   - `velocities` (List[float]): Motor velocities (rad/s)
   - `torques` (List[float]): Motor torques (Nm)
-  - `error_codes` (List[int]): Motor error codes
+  - `error_codes` (List[Optional[int]]): Motor error codes (some elements may be None)
   - `driver_temperature` (List[float]): Driver temperatures (degC)
   - `motor_temperature` (List[float]): Motor temperatures (degC)
   - `voltage` (List[float]): Motor voltages (V)

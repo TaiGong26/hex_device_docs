@@ -117,12 +117,12 @@ if state == "LsBrake":
 
 ## get_pos_range
 ```python
-def get_pos_range(self) -> Tuple[float, float]:
+def get_pos_range(self) -> Tuple[int, int]:
 ```
 Gets the position range of the lift in meters.
 
 **Returns:**
-- `Tuple[float, float]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
+- `Tuple[int, int]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
 
 **Examples:**
 ```python

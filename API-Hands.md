@@ -41,7 +41,7 @@ class Hands(OptionalDeviceBase, MotorBase):
 
 ## `__init__`
 ```python
-def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False,logger):
+def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
 ```
 Initializes a Hands device for robotic hand control.
 
@@ -182,14 +182,15 @@ Get comprehensive hands device summary including motor data and configuration.
 
 **Returns:**
 - `dict`: Hands device summary containing:
-  - Device information (name, has_new_data, last_update_time)
-  - Hand configuration (hand_type, motor_count, control_hz)
-  - Control settings (command_timeout_check, calibrated, api_control_initialized)
-  - Motor data (positions, velocities, torques)
+  - Device information: `name`, `device_id` (from get_device_summary)
+  - Hand configuration: `hand_type`, `motor_count`, `control_hz`
+  - Control settings: `command_timeout_check`, `calibrated`, `api_control_initialized`
+  - Motor data: `motor_positions`, `motor_velocities`, `motor_torques`
 
 **Examples:**
 ```python
 summary = hand.get_hands_summary()
+print(f"Device name: {summary['name']}")
 print(f"Hand type: {summary['hand_type']}")
 print(f"Motor count: {summary['motor_count']}")
 print(f"Control frequency: {summary['control_hz']} Hz")
