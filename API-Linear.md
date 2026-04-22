@@ -1,14 +1,49 @@
-The `LinearLift` class inherits from [DeviceBase](API-Common#Devicebase) and [OptionalDeviceBase](API-Common#OptionalDeviceBase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
+# LinearLift API Documentation
+<!-- 
+## Version Information
 
-Supported robot types:
-- `RtLotaLinearLiftV1`: Lota Linear Lift V1
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
 
-# Hands
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Supported Robot Types](#supported-robot-types)
+3. [Class Definition](#class-definition)
+4. [Initialization](#__init__)
+5. [Data Methods](#data-methods)
+   - [has_new_data](#has_new_data)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_state](#get_state)
+   - [get_pos_range](#get_pos_range)
+   - [get_motor_positions](#get_motor_positions)
+   - [get_move_speed](#get_move_speed)
+   - [get_max_move_speed](#get_max_move_speed)
+   - [get_pulse_per_meter](#get_pulse_per_meter)
+6. [Control Methods](#control-methods)
+   - [motor_command](#motor_command)
+   - [set_move_speed](#set_move_speed)
+   - [calibrate](#calibrate)
+7. [Inherited Methods](#inherited-methods)
+8. [Usage Examples](#usage-examples)
+
+## Overview
+
+The `LinearLift` class inherits from [DeviceBase](API-Common.md#Devicebase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
+
+## Supported Robot Types
+- `RtIotaP1`: Iota P1 Linear Lift
+- `RtIotaVc1`: Iota Vc1 Linear Lift
+
+## Class Definition
+
 ```python
-class Hands(OptionalDeviceBase, MotorBase):
+class LinearLift(DeviceBase):
 ```
 
-The common function can be found in: [DeviceBase](API-Common#Devicebase) and [OptionalDeviceBase](API-Common#OptionalDeviceBase)
+Common functions can be found in: [DeviceBase](API-Common.md#Devicebase)
 
 
 ## `__init__`
@@ -82,12 +117,12 @@ if state == "LsBrake":
 
 ## get_pos_range
 ```python
-def get_pos_range(self) -> Tuple[float, float]:
+def get_pos_range(self) -> Tuple[int, int]:
 ```
 Gets the position range of the lift in meters.
 
 **Returns:**
-- `Tuple[float, float]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
+- `Tuple[int, int]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
 
 **Examples:**
 ```python
@@ -159,6 +194,8 @@ print(f"Pulse per meter: {ppr}")
 ```python
 def motor_command(self, command_type: CommandType, values: Union[bool, float, np.ndarray]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Set motor command for the lift. Supports POSITION and BRAKE command types.
 
 **Parameters:**
@@ -247,37 +284,46 @@ print(f"Device name: {summary['name']}")
 lift.stop()
 ```
 
-## Usage Example
+## Usage Examples
 
+### Basic Lift Control Example
 ```python
 from hex_device import HexDeviceApi
+from hex_device.generated import public_api_types_pb2
 from hex_device.motor_base import CommandType
 
 # Create API instance
 api = HexDeviceApi(ws_url="ws://localhost:8080")
 
 # Find lift device
-lift = api.find_device_by_robot_type(robot_type=public_api_types_pb2.RobotType.RtLotaLinearLiftV1)
+lift = api.find_device_by_robot_type(robot_type=public_api_types_pb2.RobotType.RtIotaP1)
 
 if lift is not None:
     # Start control
     lift.start()
+    print("Lift control started")
     
-    # Calibrate the lift
+    # Calibrate lift
+    print("Calibrating lift...")
     lift.calibrate()
     
-    # Wait for calibration
+    # Wait for calibration to complete
     import time
     while lift.get_state() == "LsCalibrating":
         time.sleep(0.1)
     
     # Set move speed
-    lift.set_move_speed(1000)
+    lift.set_move_speed(1000)  # 1000 pulse/s
+    print("Move speed set to 1000 pulse/s")
     
-    # Move to position (0.5 meters)
+    # Move to target position (0.5 meters)
+    print("Moving to 0.5 meters...")
     lift.motor_command(CommandType.POSITION, 0.5)
     
-    # Check position
+    # Wait for a while
+    time.sleep(2)
+    
+    # Check current position
     if lift.has_new_data():
         position = lift.get_motor_positions()
         print(f"Current position: {position[0]} meters")

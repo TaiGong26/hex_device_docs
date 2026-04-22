@@ -1,18 +1,55 @@
-The `Hands` class inherits from [OptionalDeviceBase](API-Common#optionaldevicebase) and [MotorBase](API-Common#motorbase), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
+# Hands API Documentation
+
+<!-- 
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Control Methods](#control-methods)
+   - [command_timeout_check](#command_timeout_check)
+   - [motor_command](#motor_command)
+   - [set_positon_step](#set_positon_step)
+   - [set_pos_torque](#set_pos_torque)
+5. [Configuration Methods](#configuration-methods)
+   - [get_hand_type](#get_hand_type)
+   - [get_joint_limits](#get_joint_limits)
+6. [Summary Methods](#summary-methods)
+   - [get_hands_summary](#get_hands_summary)
+7. [Inherited Methods](#inherited-methods)
+
+
+## Overview
+
+The `Hands` class inherits from [`OptionalDeviceBase`](API-Common.md#optionaldevicebase) and [`MotorBase`](API-Motorbase.md), primarily implementing hand control and status management. This class processes the optional `hand_status` field from APIUp messages.
 
 Supported hand types:
-- `HtGp100`: GP100 hand type
-- `SdtHandGp80G1` Gp80 hand type
+- `SdtHandGp100`: GP100 hand type
+- `SdtHandGp80G1`: GP80G1 hand type
+- `SdtHandGr100`: GR100 hand type
+
+## Class Definition
+```python
+class Hands(OptionalDeviceBase, MotorBase):
+```
 
 ## `__init__`
 ```python
-def __init__(self, hand_type, motor_count, send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
+def __init__(self, device_id, device_type, motor_count, proto_version: tuple[int, int], send_message_callback, name: str = "Hands", control_hz: int = 250, read_only: bool = False):
 ```
 Initializes a Hands device for robotic hand control.
 
 **Parameters:**
-- `hand_type`: Hand type (HandType enum)
+- `device_id`: Device ID (from SecondaryDeviceStatus)
+- `device_type`: Device type (SecondaryDeviceType enum, e.g., SdtHandGp100, SdtHandGp80G1, SdtHandGr100)
 - `motor_count`: Number of motors in the hand
+- `proto_version`: Protocol version as a tuple (major, minor)
 - `send_message_callback`: Callback function for sending messages
 - `name` (str, optional): Device name, defaults to "Hands"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 250
@@ -20,16 +57,9 @@ Initializes a Hands device for robotic hand control.
 
 **Examples:**
 ```python
-# Create a GP100 hand device
-hand = Hands(
-    hand_type=HandType.HtGp100,
-    motor_count=1,
-    send_message_callback=my_callback,
-    name="Hands",
-    control_hz=500
-)
+# Usually called internally by HexDeviceApi when creating hand devices
+# Users typically don't need to call this directly
 ```
-
 ## command_timeout_check
 ```python
 def command_timeout_check(self, check_or_not: bool = True):
@@ -52,6 +82,8 @@ hand.command_timeout_check(False)
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Set motor command for the hand. Supports position limiting and MIT command conversion.
 
 **Parameters:**
@@ -65,6 +97,8 @@ Set motor command for the hand. Supports position limiting and MIT command conve
 
 **Examples:**
 ```python
+from hex_device.motor_base import CommandType
+
 # Position command with automatic limiting
 hand.motor_command(CommandType.POSITION, [0.0])
 
@@ -148,14 +182,15 @@ Get comprehensive hands device summary including motor data and configuration.
 
 **Returns:**
 - `dict`: Hands device summary containing:
-  - Device information (name, has_new_data, last_update_time)
-  - Hand configuration (hand_type, motor_count, control_hz)
-  - Control settings (command_timeout_check, calibrated, api_control_initialized)
-  - Motor data (positions, velocities, torques)
+  - Device information: `name`, `device_id` (from get_device_summary)
+  - Hand configuration: `hand_type`, `motor_count`, `control_hz`
+  - Control settings: `command_timeout_check`, `calibrated`, `api_control_initialized`
+  - Motor data: `motor_positions`, `motor_velocities`, `motor_torques`
 
 **Examples:**
 ```python
 summary = hand.get_hands_summary()
+print(f"Device name: {summary['name']}")
 print(f"Hand type: {summary['hand_type']}")
 print(f"Motor count: {summary['motor_count']}")
 print(f"Control frequency: {summary['control_hz']} Hz")
@@ -166,14 +201,13 @@ print(f"Current torques: {summary['motor_torques']}")
 
 ## Inherited Methods
 
-The `Hands` class inherits all methods from `OptionalDeviceBase` and `MotorBase`, including:
+The `Hands` class inherits all methods from `OptionalDeviceBase` and [`MotorBase`](API-MotorBase.md), including:
 
 ### From OptionalDeviceBase:
-- `has_new_data()` - Check for new data
 - `get_device_summary()` - Get device status
-- `supports_message_type()` - Check message type support
 
 ### From MotorBase:
+- `has_new_data()` - Check for new data
 - `get_motor_position(motor_index)` - Get individual motor position
 - `get_motor_positions()` - Get all motor positions
 - `get_motor_velocity(motor_index)` - Get individual motor velocity
@@ -202,3 +236,41 @@ for i in range(hand.motor_count):
     if state == "error":
         print(f"Motor {i} has error")
 ```
+
+
+<!-- 
+## Best Practices
+
+1. **Use position commands for simple control**
+   - Position commands are automatically limited to hand joint limits
+
+2. **Use appropriate step size for smooth control**
+   - Smaller steps for smoother movement, larger steps for faster movement
+
+3. **Monitor motor status**
+   - Check for error states regularly
+
+4. **Use appropriate control frequency**
+   - The default 250Hz is suitable for most hand control applications
+
+5. **Batch commands when possible**
+   - Group multiple motor commands to reduce communication overhead
+
+## Troubleshooting
+
+1. **Hand Not Responding**
+   - **Symptom**: Commands have no effect
+   - **Solution**: Ensure proper initialization and connection
+
+2. **Motor Error State**
+   - **Symptom**: Motor state returns "error"
+   - **Solution**: Check motor connections and configuration
+
+3. **Position Command Not Working**
+   - **Symptom**: Position commands rejected
+   - **Solution**: Check joint limits with `get_joint_limits()`
+
+4. **Debugging Tips**
+   - Enable verbose logging to see detailed communication
+   - Test with basic commands before complex operations
+ -->

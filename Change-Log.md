@@ -69,7 +69,7 @@ Feat:
 - IPv6 connectivity is now supported.
 
 ## 1.3.7 (2025.12.12)
-Fix：
+Fix:
 - Fix IPv4 interface crash.
 
 ## 1.3.8 (2025.12.12)
@@ -127,7 +127,7 @@ Feat:
 - Currently, the logs will print the IP address and port number of the API's current connection target.
 - Add parsing for the warning field in the MotorStatus structure.
 
-Refactor：
+Refactor:
 - Change to directly report the error code when there is a motor error, instead of just indicating that an error has occurred.
 
 ## 1.3.18 (2026.2.15)

@@ -1,31 +1,85 @@
-The `Arm` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+# Arm API Documentation
+<!-- 
+## Version Information
 
-Supported robot types:
-- `RtArmSaberD6x`: Saber 6-DOF robotic arm (ID: 14)
-- `RtArmSaberD7x`: Saber 7-DOF robotic arm (ID: 15)
-- `RtArmArcherD6Y_P1`: Archer 6-DOF robotic arm (ID: 16)
-- `RtArmArcherY6L_V1`: Archer 6-DOF robotic arm (ID: 17)
-- `RtArmArcherY6_H1`: Archer 6-DOF robotic arm (ID: 25)
-- `RtArmFireflyY6_H1`: Firefly 6-DOF robotic arm (ID: 27)
-- `RtHelloArcherY6_H1`: Hello Archer 6-DOF robotic arm (ID: 26)
-- `RtHelloFireflyY6_H1`: Hello Firefly 6-DOF robotic arm (ID: 28)
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+-->
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Supported Robot Types](#supported-robot-types)
+3. [Class Definition](#class-definition)
+4. [Initialization](#__init__)
+5. [Basic Control Methods](#basic-control-methods)
+   - [start](#start)
+   - [stop](#stop)
+   - [command_timeout_check](#command_timeout_check)
+   - [motor_command](#motor_command)
+   - [clear_parking_stop](#clear_parking_stop)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_session_holder](#get_session_holder)
+   - [get_my_session_id](#get_my_session_id)
+   - [enable_mit](#enable_mit)
+6. [Configuration Methods](#configuration-methods)
+   - [get_arm_config](#get_arm_config)
+   - [get_joint_limits](#get_joint_limits)
+   - [get_joint_names](#get_joint_names)
+   - [get_expected_motor_count](#get_expected_motor_count)
+   - [check_motor_count_match](#check_motor_count_match)
+   - [get_arm_series](#get_arm_series)
+   - [get_arm_name](#get_arm_name)
+7. [Advanced Control Methods](#advanced-control-methods)
+   - [end_effector_control](#end_effector_control)
+   - [enable_free_drag](#enable_free_drag)
+   - [enable_zero_current_control](#enable_zero_current_control)
+   - [compensated_mit_control](#compensated_mit_control)
+8. [Validation Methods](#validation-methods)
+   - [validate_joint_positions](#validate_joint_positions)
+   - [validate_joint_velocities](#validate_joint_velocities)
+   - [is_timeout](#is_timeout)
+9. [Configuration Management](#configuration-management)
+   - [reload_arm_config_from_dict](#reload_arm_config_from_dict)
+10. [Motion History Management](#motion-history-management)
+
+
+## Overview
+
+The `Arm` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md), primarily implementing the control of robotic arm devices. This class corresponds to `ArmStatus` in the proto, managing arm status and motor control.
+
+## Supported Robot Types
+
+| Robot Type | Degrees of Freedom | Model | ID |
+|------------|-------------------|-------|----|
+| `RtArmSaberD6x` | 6 | Saber | 14 |
+| `RtArmSaberD7x` | 7 | Saber | 15 |
+| `RtArmArcherD6Y_P1` | 6 | Archer | 16 |
+| `RtArmArcherY6L_V1` | 6 | Archer | 17 |
+| `RtArmArcherY6_H1` | 6 | Archer | 25 |
+| `RtArmFireflyY6_H1` | 6 | Firefly | 27 |
+| `RtHelloArcherY6_H1` | 6 | Hello Archer | 26 |
+| `RtHelloFireflyY6_H1` | 6 | Hello Firefly | 28 |
+| `RtArmArcherX7h1` | 7 | Archer | 29 |
 
 # Arm
 ```python
 class Arm(DeviceBase, MotorBase):
 ```
 
-The common function can be found in: [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase).
+The common function can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md).
 
 ## `__init__`
 ```python
-def __init__(self, robot_type, motor_count, name: str = "Arm", control_hz: int = 500, send_message_callback=None):
+def __init__(self, robot_type, motor_count, proto_version, name: str = "Arm", control_hz: int = 500, send_message_callback=None):
 ```
 Automatically called by HexDeviceApi to initialize the Arm robotic arm device.
 
 **Parameters:**
 - `robot_type`: Robot type (RobotType enum or int ID)
 - `motor_count` (int): Number of motors
+- `proto_version` (tuple[int, int]): Protocol version as a tuple (major, minor)
 - `name` (str, optional): Device name, defaults to "Arm"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 500
 - `send_message_callback` (callable, optional): Callback function for sending messages
@@ -33,7 +87,7 @@ Automatically called by HexDeviceApi to initialize the Arm robotic arm device.
 **Examples:**
 ```python
 # Usually called internally by HexDeviceApi
-arm = Arm(robot_type=16, motor_count=6, name="MyArm", control_hz=500)
+arm = Arm(robot_type=16, motor_count=6, proto_version=(1, 2), name="MyArm", control_hz=500)
 ```
 
 ## `start`
@@ -80,6 +134,8 @@ arm.command_timeout_check(False)
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Sets robotic arm motor commands with automatic validation for position and velocity commands.  
 > **Warning!!!!**Only one command can be set at the same time.
 
@@ -115,11 +171,11 @@ arm.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.2, 0.1, 0.1, 0.0])
 
 # Set MIT commands (may require enable_mit() first)
 mit_commands = arm.construct_mit_command(
-    [0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # positions
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # speeds
-    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # torques
-    [100.0] * 6,  # kp
-    [10.0] * 6    # kd
+    pos=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # Target positions
+    speed=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target speeds
+    torque=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target torques
+    kp=[100.0] * 6,  # Proportional gains
+    kd=[10.0] * 6    # Derivative gains
 )
 arm.motor_command(CommandType.MIT, mit_commands)
 ```
@@ -308,6 +364,162 @@ if arm_name:
     print(f"Arm name: {arm_name}")
 ```
 
+## Advanced Control Methods
+
+### end_effector_control
+```python
+def end_effector_control(self, position: Union[List[float], Tuple[float, float, float]], orientation: Union[List[float], Tuple[float, float, float, float], None] = None, gravity_acc: Optional[List[float]] = None):
+```
+Controls the position and orientation of the arm's end effector.
+
+**Parameters:**
+- `position` (Union[List[float], Tuple[float, float, float]]): End effector position (x, y, z) in meters, length must be 3
+- `orientation` (Union[List[float], Tuple[float, float, float, float], None], optional): End effector orientation as quaternion (qw, qx, qy, qz), defaults to [1, 0, 0, 0] (identity quaternion)
+- `gravity_acc` (Optional[List[float]], optional): Gravity acceleration (ax, ay, az) for compensation, length must be 3 when provided
+
+**Notes:**
+- This method allows direct control of the end effector position and orientation without manually calculating joint angles
+- Suitable for scenarios requiring precise end effector positioning
+- Gravity compensation improves control accuracy, especially for vertical movements
+
+Examples:
+```python
+# Control end effector to specified position (default orientation)
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5]  # x=0.5m, y=0.0m, z=0.5m
+)
+
+# Control end effector to specified position and orientation
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5],
+    orientation=[1.0, 0.0, 0.0, 0.0]  # Identity quaternion (default orientation)
+)
+
+# End effector control with gravity compensation
+arm.end_effector_control(
+    position=[0.5, 0.0, 0.5],
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
+```
+
+### joint_position_control
+```python
+def joint_position_control(self, joint_positions: List[float]):
+```
+A more convenient joint position control mode that plans the target position before moving.
+
+**Parameters:**
+- `joint_positions` (List[float]): Joint positions in radians, length must match the motor count
+
+**Notes:**
+- This method automatically plans the joint movement path to smoothly move the arm to the target position
+- Suitable for scenarios requiring precise joint angle control
+- Internal joint limit validation is performed to ensure safe movement
+- The method uses the arm's built-in trajectory planning capabilities
+
+Examples:
+```python
+# Control arm to specified joint positions
+arm.joint_position_control(
+    joint_positions=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0]  # Target positions for 6 joints
+)
+
+# Get current joint positions and then make fine adjustments
+current_positions = arm.get_motor_positions()
+if current_positions is not None:
+    # Make fine adjustments based on current positions
+    new_positions = [pos + 0.1 for pos in current_positions]
+    arm.joint_position_control(new_positions)
+```
+
+### enable_free_drag
+```python
+def enable_free_drag(self, gravity_acc: list[float]):
+```
+Enables free drag mode, allowing manual manipulation of the arm.
+
+**Parameters:**
+- `gravity_acc` (list[float]): Gravity acceleration (ax, ay, az) for compensation, length must be 3
+
+**Notes:**
+- In free drag mode, the arm enters a low-impedance state, allowing the user to manually move it
+- Gravity compensation parameters are used to counteract the effects of gravity, making dragging easier
+- Suitable for teaching, programming demonstration, and manual arm position adjustment
+- While in free drag mode, the arm will not execute other control commands
+- To exit free drag mode, send another control command such as position or speed
+
+Examples:
+```python
+# Enable free drag mode (with gravity compensation)
+arm.enable_free_drag(
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
+print("Free drag mode enabled. You can now manually move the arm.")
+
+# Note: While in free drag mode, the arm will not execute other control commands
+# To exit free drag mode, send another control command, such as position or speed
+```
+
+### enable_zero_current_control
+```python
+def enable_zero_current_control(self):
+```
+Enables zero current control mode for the arm.
+
+**Notes:**
+- Zero current control mode disables torque output, allowing the arm to move freely
+- Use this mode when you want to manually move the arm without any resistance
+- Be cautious when using this mode as the arm will not maintain its position
+
+Examples:
+```python
+# Enable zero current control mode
+arm.enable_zero_current_control()
+print("Zero current control mode enabled. Arm can now be moved freely.")
+
+# Note: In zero current mode, the arm will not hold its position
+# Use gravity compensation if you need to maintain position while allowing movement
+```
+
+### compensated_mit_control
+```python
+def compensated_mit_control(self, mit_commands: List[MitMotorCommand], gravity_acc: List[float]):
+```
+Compensated MIT control mode with higher precision.
+
+**Parameters:**
+- `mit_commands` (List[MitMotorCommand]): MIT command list, each element contains torque, speed, position, kp, and kd parameters
+- `gravity_acc` (List[float]): Gravity acceleration (ax, ay, az) for compensation, length must be 3
+
+**Notes:**
+- MIT control allows simultaneous control of joint position, speed, and torque
+- Gravity compensation improves control accuracy, especially for vertical movements
+- Suitable for high-precision control scenarios such as fine manipulation and force control
+- Each MitMotorCommand includes:
+  - `torque`: Target torque (Nm)
+  - `speed`: Target speed (rad/s)
+  - `position`: Target position (rad)
+  - `kp`: Proportional gain
+  - `kd`: Derivative gain
+
+Examples:
+```python
+# Construct MIT commands
+mit_commands = arm.construct_mit_command(
+    pos=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # Target positions
+    speed=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target speeds
+    torque=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  # Target torques
+    kp=[100.0] * 6,  # Proportional gains
+    kd=[10.0] * 6     # Derivative gains
+)
+
+# Compensated MIT control with gravity compensation
+arm.compensated_mit_control(
+    mit_commands=mit_commands,
+    gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
+)
+```
+
 ## Validation Methods
 
 ### validate_joint_positions
@@ -336,6 +548,23 @@ target_velocities = [1.0, -2.0, 3.0, 0.5, -1.5, 0.8]
 safe_velocities = arm.validate_joint_velocities(target_velocities, dt=0.002)
 print(f"Original: {target_velocities}")
 print(f"Validated: {safe_velocities}")
+```
+
+### is_timeout
+```python
+def is_timeout(self) -> bool:
+```
+Checks if the arm control has timed out.
+
+**Returns:**
+- `bool`: True if control has timed out, False otherwise
+
+Examples:
+```python
+if arm.is_timeout():
+    print("Arm control has timed out")
+else:
+    print("Arm control is active")
 ```
 
 ## Configuration Management
@@ -464,6 +693,10 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `target_positions` - Get all motor target positions (rad)
 - `target_velocities` - Get all motor target velocities (rad/s)
 - `target_torques` - Get all motor target torques (Nm)
+- `cache_motion_data` - Get all motor cache motion data (positions, velocities, torques)
+- `cache_positions` - Get all motor cache positions (rad)
+- `cache_velocities` - Get all motor cache velocities (rad/s)
+- `cache_torques` - Get all motor cache torques (Nm)
 - `has_new_data()` - Check if there is new motor data
 - `get_motor_error_codes()` - Get all motor error codes
 - `get_motor_state(motor_index)` - Get specified motor state
@@ -493,7 +726,7 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `get_motor_status(motor_index, pop)` - Get detailed status for specified motor
 - `flush_motor_data()` - Clear all motor data queues
 
-For detailed documentation of these methods, see [MotorBase](API-Motorbase).
+For detailed documentation of these methods, see [MotorBase](API-Motorbase.md).
 
 **Examples:**
 ```python
@@ -566,3 +799,46 @@ if arm is not None:
     # Stop device control
     arm.stop()
 ```
+<!-- 
+## Best Practices
+
+1. **Always call `stop()` before exiting**
+   - Ensures proper disconnection and prevents timeout errors
+
+2. **Use automatic validation**
+   - Take advantage of automatic position and velocity validation
+   - Prevents sending invalid commands to the arm
+
+3. **Check session holder before starting**
+   - Use `get_session_holder()` to check if another controller is active
+
+4. **Monitor parking stop status**
+   - Regularly check `get_parking_stop_detail()` to detect issues
+
+5. **Use MIT commands for precise control**
+   - MIT commands offer more precise control with PID gains
+   - Enable MIT mode with `enable_mit()` when needed
+
+## Troubleshooting
+
+1. **Cannot Start Control**
+   - **Symptom**: `start()` has no effect
+   - **Solution**: Wait for other controller to release control or restart arm
+
+2. **Motor Count Mismatch**
+   - **Symptom**: `check_motor_count_match()` returns False
+   - **Solution**: Verify robot type and check arm configuration
+
+3. **Parking Stop**
+   - **Symptom**: Arm stops unexpectedly
+   - **Solution**: Check `get_parking_stop_detail()` for reason and clear if possible
+
+4. **Command Timeout**
+   - **Symptom**: Arm enters timeout state
+   - **Solution**: Increase command sending frequency
+
+5. **Debugging Tips**
+   - Enable verbose logging to see detailed communication
+   - Regularly check `get_arm_config()` and `get_arm_series()`
+   - Test with simple commands before complex operations
+ -->

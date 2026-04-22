@@ -1,21 +1,32 @@
-**Guide：**
-- [HexDeviceApi](#HexDeviceApi)
-- [DeviceBase](#Devicebase)
-- [OptionalDeviceBase](#OptionalDeviceBase)
+# HexDevice Common API Documentation
+<!-- 
+## Version Information
 
-# HexDeviceApi
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
+## Table of Contents
+
+1. [HexDeviceApi](#hexdeviceapi)
+2. [DeviceBase](#devicebase)
+3. [OptionalDeviceBase](#optionaldevicebase)
+4. [MotorBase](#motorbase)
+
+## HexDeviceApi
 
 ## `__init__`
 ```python
-def __init__(self, ws_url: str, control_hz: int = 500, enable_kcp: bool = True, local_port: int = None):
+def __init__(self, ws_url: str = None, control_hz: int = 500, enable_kcp: bool = True, local_port: int = None, send_down_callback=None):
 ```
 Creates the main HexDevice API runtime, validates the WebSocket endpoint, and launches the internal asyncio worker thread that manages device discovery and message dispatch.
 
 Parameters:
-- `ws_url`: WebSocket URL of the HexDevice server. Raises an `InvalidWSURLException` if the value is not supported.
+- `ws_url`: WebSocket URL of the HexDevice server. Raises an `InvalidWSURLException` if the value is not supported. Set to `None` when using stream mode.
 - `control_hz`: Frequency (Hz) for internal scheduling when processing device tasks. Defaults to 500 Hz.
-- `enable_kcp`: Enables the accelerated KCP transport channel when available. When `True`, the API will negotiate the UDP tunnel, otherwise all traffic stays on the base WebSocket connection.
+- `enable_kcp`: Enables the accelerated KCP transport channel when available. When `True`, the API will negotiate the UDP tunnel, otherwise all traffic stays on the base WebSocket connection. Automatically disabled in stream mode.
 - `local_port`: Explicit local UDP port for the KCP client. Use `None` to let the OS pick a free port automatically.
+- `send_down_callback`: Optional callback function that is called when a message is sent down to the device. When provided, enables stream mode which bypasses all WebSocket/KCP transport. The caller is responsible for feeding data by invoking `_process_api_up()` directly and receives outgoing commands through this callback.
 
 Examples:
 ```python
@@ -143,15 +154,81 @@ finally:
 ```python
 def get_raw_data(self) -> Tuple[Optional[public_api_up_pb2.APIUp], int]:
 ```
-Returns a tuple of the oldest buffered `APIUp` protobuf message and the remaining queue length. The first element is `None` if the buffer is empty. Internally the API maintains a sliding window buffer (maximum length `RAW_DATA_LEN`, equal to 50 frames). By consuming the queue frequently you can reconstruct a lossless real-time stream; helper routines such as `_parse_wheel_data` can be used to decode the payload.  
+Returns a tuple of the oldest buffered `APIUp` protobuf message and the remaining queue length. The first element is `None` if the buffer is empty. Internally the API maintains a sliding window buffer (maximum length `RAW_DATA_LEN`, equal to 50 frames). By consuming the queue frequently you can reconstruct a lossless real-time stream.
+
+**Parameters:**
+None
+
+**Returns:**
+- `Tuple[Optional[public_api_up_pb2.APIUp], int]`: A tuple containing:
+  - The oldest buffered `APIUp` protobuf message, or `None` if the buffer is empty
+  - The remaining queue length in the buffer
+
+**Notes:**
+- The buffer has a maximum capacity of 50 frames. When the buffer is full, the oldest message is automatically removed to make room for new messages.
+- This method is thread-safe and can be called from multiple threads simultaneously.
+- The `APIUp` message contains all device status information, including base status, arm status, and secondary device status.
+
 Examples:
 ```python
+# Basic usage example
 while not api.is_api_exit():
     (data, num) = api.get_raw_data()
     if data is not None:
-        # parse data
+        # Process raw data
+        if data.HasField('base_status'):
+            # Handle chassis status
+            pass
+        elif data.HasField('arm_status'):
+            # Handle arm status
+            pass
+
+# Stream mode usage example
+# 1. Define callback function to handle downlink messages
+def send_down_callback(message):
+    """Handle messages sent to the device"""
+    # Process the message here, e.g., send over custom protocol
+    print(f"Sending message of length: {len(message)}")
+
+# 2. Create API instance with stream mode enabled
+api = HexDeviceApi(ws_url=None, send_down_callback=send_down_callback)
+
+# 3. Simulate data input (in real application, get from external data source)
+def simulate_data_input(api):
+    """Simulate data input to API"""
+    while not api.is_api_exit():
+        # Here you should get APIUp messages from actual data source
+        # e.g., from network, file, or other devices
+        # Then call api._process_api_up(api_up_message)
+        time.sleep(0.01)  # Simulate 100Hz data input
+
+# 4. Start data input thread
+import threading
+import time
+data_thread = threading.Thread(target=simulate_data_input, args=(api,))
+data_thread.daemon = True
+data_thread.start()
+
+# 5. Process output data
+while not api.is_api_exit():
+    (data, num) = api.get_raw_data()
+    if data is not None:
+        # Process received data
         pass
 ```
+
+# MotorBase
+
+## Overview
+The `MotorBase` class provides common motor control functionality for devices with motors. It is inherited by device classes that require motor control capabilities.
+
+## Key Features
+- Motor status monitoring
+- Common motor control operations
+- Temperature monitoring
+
+## Documentation
+For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase.md).
 
 # OptionalDeviceBase
 

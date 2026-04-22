@@ -1,24 +1,59 @@
-The `ZetaLift` class inherits from [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase), primarily implementing ZetaLift (rotating lift) status management and motor control. This class processes the `rotate_lift_status` field from APIUp messages.
+# ZetaLift API Documentation
+
+<!-- 
+## Version Information
+
+- **API Version**: 1.0
+- **Protocol Version**: (1, 0)
+- **Compatibility**: Requires HexDevice Python SDK v1.0 or later
+ -->
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Class Definition](#class-definition)
+3. [Initialization](#__init__)
+4. [Calibrate Methods](#calibrate)
+   - [calibrate](#calibrate)
+   - [is_calibrated](#is_calibrated)
+5. [Control Methods](#control-methods)
+   - [set_move_speed](#set_move_speed)
+6. [State Methods](#state-methods)
+   - [get_joint_limits](#get_joint_limits)
+   - [get_state](#get_state)
+   - [get_my_session_id](#get_my_session_id)
+   - [get_parking_stop_detail](#get_parking_stop_detail)
+   - [get_status_summary](#get_status_summary)
+7. [motor_command](#motor_command)
+7. [Inherited Methods](#inherited-methods)
+8. [Usage Examples](#usage-examples)
+
+
+
+## Overview
+
+The `ZetaLift` class inherits from [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md), primarily implementing ZetaLift (rotating lift) status management and motor control. This class processes the `rotate_lift_status` field from APIUp messages.
 
 Supported robot types:
 - `RtZetaVc2`: Zeta Vc2 robot type
 
-# ZetaLift
+## Class Definition
 ```python
 class ZetaLift(DeviceBase, MotorBase):
 ```
 
-The common functions can be found in: [DeviceBase](API-Common#DeviceBase) and [MotorBase](API-Motorbase).
+The common functions can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md).
 
 ## `__init__`
 ```python
-def __init__(self, motor_count: int, robot_type: int, name: str = "ZetaLift", control_hz: int = 500, send_message_callback=None):
+def __init__(self, motor_count: int, robot_type: int, proto_version: tuple[int, int], name: str = "ZetaLift", control_hz: int = 500, send_message_callback=None):
 ```
 Automatically called by HexDeviceApi to initialize the ZetaLift device.
 
 **Parameters:**
 - `motor_count` (int): Number of motors
 - `robot_type` (int): Robot type (RobotType enum, e.g., RtZetaVc2)
+- `proto_version` (tuple[int, int]): Protocol version as a tuple (major, minor)
 - `name` (str, optional): Device name, defaults to "ZetaLift"
 - `control_hz` (int, optional): Control frequency in Hz, defaults to 500
 - `send_message_callback` (callable, optional): Callback function for sending messages
@@ -82,7 +117,7 @@ def get_joint_limits(self) -> Optional[List[List[float]]]:
 Gets the joint limits for all motors.
 
 **Returns:**
-- `Optional[List[List[float]]]`: Joint limits for each motor, or None if not available. Each motor's limits are in the format: `[min_pos, max_pos, min_vel, max_vel, min_acc, max_acc]`
+- `Optional[List[List[float]]]`: Joint limits, or None if not available. The list is in the format: `[[min_pos, max_pos], [min_vel, max_vel], [min_acc, max_acc]]`
   - `min_pos`, `max_pos`: Minimum and maximum position limits (pulses)
   - `min_vel`, `max_vel`: Minimum and maximum velocity limits (rad/s)
   - `min_acc`, `max_acc`: Minimum and maximum acceleration limits (rad/s²)
@@ -182,6 +217,8 @@ print(f"Position limits: min={summary['min_pos']}, max={summary['max_pos']}")
 ```python
 def motor_command(self, command_type: CommandType, values: List[float]):
 ```
+> **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
+
 Sets motor command for the ZetaLift. This method extends the base `motor_command` from MotorBase and also records the command timestamp for timeout checking.
 
 **Parameters:**
@@ -246,7 +283,7 @@ The `ZetaLift` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `get_motor_status(motor_index, pop)` - Get detailed status for specified motor
 - `flush_motor_data()` - Clear all motor data queues
 
-For detailed documentation of these methods, see [MotorBase](API-Motorbase).
+For detailed documentation of these methods, see [MotorBase](API-Motorbase.md).
 
 **Examples:**
 ```python
@@ -270,8 +307,9 @@ if motor_summary is not None:
     print(f"States: {motor_summary['states']}")
 ```
 
-## Usage Example
+## Usage Examples
 
+### Basic Zeta Lift Control Example
 ```python
 from hex_device import HexDeviceApi
 from hex_device.generated import public_api_types_pb2
@@ -281,7 +319,7 @@ import asyncio
 # Create API instance
 api = HexDeviceApi(ws_url="ws://localhost:8080")
 
-# Find ZetaLift device by robot type
+# Find Zeta lift device
 zeta_lift = api.find_device_by_robot_type(robot_type=public_api_types_pb2.RobotType.RtZetaVc2)
 
 if zeta_lift is not None:
@@ -299,10 +337,10 @@ if zeta_lift is not None:
     if limits is not None:
         print(f"Joint limits: {limits}")
     
-    # Set move speed for position mode
+    # Set move speed 
     zeta_lift.set_move_speed([0.5, 0.5, 0.5])
     
-    # Get motor positions
+    # Get current motor positions
     positions = zeta_lift.get_motor_positions()
     if positions is not None:
         print(f"Current positions: {positions}")
@@ -314,6 +352,6 @@ if zeta_lift is not None:
     summary = zeta_lift.get_status_summary()
     print(f"Status summary: {summary}")
     
-    # Stop device control
+    # Stop control
     zeta_lift.stop()
 ```
