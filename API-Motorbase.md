@@ -576,8 +576,6 @@ Sets motor commands for the device, supporting five command types: BRAKE, SPEED,
 | TORQUE | ✓* | ✗ | ✗ | ✗ | ✓ |
 | MIT | ✓* | ✗ | ✗ | ✗ | ✓ |
 
-*Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.*
-
 Examples:
 ```python
 from hex_device.motor_base import CommandType, MitMotorCommand
@@ -593,9 +591,6 @@ device.motor_command(CommandType.POSITION, [0.0, 1.57, 3.14])
 
 # TORQUE command - control motor torques (Nm)
 device.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
-
-# Set torque command
-motor.motor_command(CommandType.TORQUE, [0.5, 0.3, 0.0])
 
 # set mit command
 mit_commands = device.construct_mit_command(
