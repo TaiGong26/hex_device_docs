@@ -132,7 +132,7 @@ Sets motor commands for the device, supporting seven command types: BRAKE, SPEED
 | SPEED_WITH_MAX_CURRENT | ✗ | ✓ | ✗ | ✗ | ✗ |
 <!-- | POS_VEL_ACC | ✗ | ✗ | ✗ | ✗ | ✗ | -->
 
-*Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.*
+<!-- *Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.* -->
 
 Examples:
 ```python
