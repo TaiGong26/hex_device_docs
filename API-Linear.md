@@ -1,11 +1,11 @@
 # LinearLift API Documentation
-<!-- 
+<!--
 ## Version Information
 
 - **API Version**: 1.0
 - **Protocol Version**: (1, 0)
 - **Compatibility**: Requires HexDevice Python SDK v1.0 or later
- -->
+-->
 
 ## Table of Contents
 
@@ -29,6 +29,7 @@
 7. [Inherited Methods](#inherited-methods)
 8. [Usage Examples](#usage-examples)
 
+
 ## Overview
 
 The `LinearLift` class inherits from [DeviceBase](API-Common.md#Devicebase), primarily implementing linear lift control and status management. This class processes the `linear_lift_status` field from APIUp messages.
@@ -45,11 +46,14 @@ class LinearLift(DeviceBase):
 
 Common functions can be found in: [DeviceBase](API-Common.md#Devicebase)
 
+## Initialization
 
-## `__init__`
+### `__init__`
+
 ```python
 def __init__(self, motor_count: int, robot_type: int, name: str = "Lift", control_hz: int = 500, send_message_callback=None):
 ```
+
 Initializes a LinearLift device for linear lift control.
 
 **Parameters:**
@@ -60,140 +64,20 @@ Initializes a LinearLift device for linear lift control.
 - `send_message_callback` (callable, optional): Callback function for sending messages
 
 **Examples:**
+
 ```python
 # Usually called internally by HexDeviceApi when creating lift devices
 # Users typically don't need to call this directly
 ```
 
-## has_new_data
-```python
-def has_new_data(self) -> bool:
-```
-Checks if there is lift data available.
+## Control Methods
 
-**Returns:**
-- `bool`: True if there is data coming, False otherwise
+### motor_command
 
-**Examples:**
-```python
-if lift.has_new_data():
-    # Get current lift state
-    position = lift.get_motor_positions()
-    speed = lift.get_move_speed()
-```
-
-## get_parking_stop_detail
-```python
-def get_parking_stop_detail(self) -> Optional[public_api_types_pb2.ParkingStopDetail]:
-```
-Gets the parking stop detail information. Returns `None` if there is no parking stop.
-
-**Returns:**
-- `Optional[ParkingStopDetail]`: Parking stop detail or None if no parking stop
-
-**Examples:**
-```python
-parking_detail = lift.get_parking_stop_detail()
-if parking_detail is not None:
-    print(f"Parking stop detected: {parking_detail}")
-```
-
-## get_state
-```python
-def get_state(self) -> str:
-```
-Gets the current lift state.
-
-**Returns:**
-- `str`: Lift state name (e.g., "LsBrake", "LsCalibrating", "LsAlgrithmControl", "LsOvertakeControl", "LsEmergencyStop")
-
-**Examples:**
-```python
-state = lift.get_state()
-print(f"Lift state: {state}")
-if state == "LsBrake":
-    print("Lift is in brake mode")
-```
-
-## get_pos_range
-```python
-def get_pos_range(self) -> Tuple[int, int]:
-```
-Gets the position range of the lift in meters.
-
-**Returns:**
-- `Tuple[int, int]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
-
-**Examples:**
-```python
-min_pos, max_pos = lift.get_pos_range()
-print(f"Position range: {min_pos} to {max_pos} meters")
-```
-
-## get_motor_positions
-```python
-def get_motor_positions(self) -> List[float]:
-```
-Gets the current motor positions in meters.
-
-**Returns:**
-- `List[float]`: Current motor positions (m)
-
-**Examples:**
-```python
-positions = lift.get_motor_positions()
-print(f"Current position: {positions[0]} meters")
-```
-
-## get_move_speed
-```python
-def get_move_speed(self) -> float:
-```
-Gets the current move speed.
-
-**Returns:**
-- `float`: Current move speed (pulse/s)
-
-**Examples:**
-```python
-speed = lift.get_move_speed()
-print(f"Current speed: {speed} pulse/s")
-```
-
-## get_max_move_speed
-```python
-def get_max_move_speed(self) -> float:
-```
-Gets the maximum move speed that can be set.
-
-**Returns:**
-- `float`: Maximum move speed (pulse/s)
-
-**Examples:**
-```python
-max_speed = lift.get_max_move_speed()
-print(f"Max speed: {max_speed} pulse/s")
-```
-
-## get_pulse_per_meter
-```python
-def get_pulse_per_meter(self) -> float:
-```
-Gets the pulse per meter conversion factor.
-
-**Returns:**
-- `float`: Pulse per meter
-
-**Examples:**
-```python
-ppr = lift.get_pulse_per_meter()
-print(f"Pulse per meter: {ppr}")
-```
-
-## motor_command
 ```python
 def motor_command(self, command_type: CommandType, values: Union[bool, float, np.ndarray]):
 ```
+
 > **Note:** For detailed command types and usage, see [motor_command](API-Motorbase.md#motor_command) in API-Motorbase.
 
 Set motor command for the lift. Supports POSITION and BRAKE command types.
@@ -210,6 +94,7 @@ Set motor command for the lift. Supports POSITION and BRAKE command types.
 - The lift must be calibrated before sending position commands
 
 **Examples:**
+
 ```python
 # Position command (in meters)
 lift.motor_command(CommandType.POSITION, 0.5)
@@ -223,16 +108,19 @@ lift.motor_command(CommandType.POSITION, position)
 lift.motor_command(CommandType.BRAKE, True)
 ```
 
-## set_move_speed
+### set_move_speed
+
 ```python
 def set_move_speed(self, speed: Union[float, np.ndarray]):
 ```
+
 Set the move speed for the lift.
 
 **Parameters:**
 - `speed` (float or np.ndarray): Target speed (pulse/s). Automatically clamped to [0, max_speed]
 
 **Examples:**
+
 ```python
 # Set move speed
 lift.set_move_speed(1000)  # 1000 pulse/s
@@ -241,10 +129,12 @@ lift.set_move_speed(1000)  # 1000 pulse/s
 lift.set_move_speed(5000)  # Will be clamped to max_speed
 ```
 
-## calibrate
+### calibrate
+
 ```python
 def calibrate(self):
 ```
+
 Calibrate the lift. The lift must be calibrated before moving when powered on.
 
 **Warning:**
@@ -252,6 +142,7 @@ Calibrate the lift. The lift must be calibrated before moving when powered on.
 - Only send calibrate command when necessary (e.g., after power on or after clearing parking stop)
 
 **Examples:**
+
 ```python
 # Calibrate the lift (usually done once after power on)
 lift.calibrate()
@@ -260,6 +151,157 @@ lift.calibrate()
 import time
 while lift.get_state() == "LsCalibrating":
     time.sleep(0.1)
+```
+
+## Data Methods
+
+### has_new_data
+
+```python
+def has_new_data(self) -> bool:
+```
+
+Checks if there is lift data available.
+
+**Returns:**
+- `bool`: True if there is data coming, False otherwise
+
+**Examples:**
+
+```python
+if lift.has_new_data():
+    # Get current lift state
+    position = lift.get_motor_positions()
+    speed = lift.get_move_speed()
+```
+
+### get_parking_stop_detail
+
+```python
+def get_parking_stop_detail(self) -> Optional[public_api_types_pb2.ParkingStopDetail]:
+```
+
+Gets the parking stop detail information. Returns `None` if there is no parking stop.
+
+**Returns:**
+- `Optional[ParkingStopDetail]`: Parking stop detail or None if no parking stop
+
+**Examples:**
+
+```python
+parking_detail = lift.get_parking_stop_detail()
+if parking_detail is not None:
+    print(f"Parking stop detected: {parking_detail}")
+```
+
+### get_state
+
+```python
+def get_state(self) -> str:
+```
+
+Gets the current lift state.
+
+**Returns:**
+- `str`: Lift state name (e.g., "LsBrake", "LsCalibrating", "LsAlgrithmControl", "LsOvertakeControl", "LsEmergencyStop")
+
+**Examples:**
+
+```python
+state = lift.get_state()
+print(f"Lift state: {state}")
+if state == "LsBrake":
+    print("Lift is in brake mode")
+```
+
+### get_pos_range
+
+```python
+def get_pos_range(self) -> Tuple[int, int]:
+```
+
+Gets the position range of the lift in meters.
+
+**Returns:**
+- `Tuple[int, int]`: Position range (min, max) in meters. Returns (0, 0) if not calibrated.
+
+**Examples:**
+
+```python
+min_pos, max_pos = lift.get_pos_range()
+print(f"Position range: {min_pos} to {max_pos} meters")
+```
+
+### get_motor_positions
+
+```python
+def get_motor_positions(self) -> List[float]:
+```
+
+Gets the current motor positions in meters.
+
+**Returns:**
+- `List[float]`: Current motor positions (m)
+
+**Examples:**
+
+```python
+positions = lift.get_motor_positions()
+print(f"Current position: {positions[0]} meters")
+```
+
+### get_move_speed
+
+```python
+def get_move_speed(self) -> float:
+```
+
+Gets the current move speed.
+
+**Returns:**
+- `float`: Current move speed (pulse/s)
+
+**Examples:**
+
+```python
+speed = lift.get_move_speed()
+print(f"Current speed: {speed} pulse/s")
+```
+
+### get_max_move_speed
+
+```python
+def get_max_move_speed(self) -> float:
+```
+
+Gets the maximum move speed that can be set.
+
+**Returns:**
+- `float`: Maximum move speed (pulse/s)
+
+**Examples:**
+
+```python
+max_speed = lift.get_max_move_speed()
+print(f"Max speed: {max_speed} pulse/s")
+```
+
+### get_pulse_per_meter
+
+```python
+def get_pulse_per_meter(self) -> float:
+```
+
+Gets the pulse per meter conversion factor.
+
+**Returns:**
+- `float`: Pulse per meter
+
+**Examples:**
+
+```python
+ppr = lift.get_pulse_per_meter()
+print(f"Pulse per meter: {ppr}")
 ```
 
 ## Inherited Methods
@@ -272,6 +314,7 @@ The `LinearLift` class inherits all methods from `DeviceBase`, including:
 - `get_device_summary()` - Get device status summary
 
 **Examples:**
+
 ```python
 # Start lift control
 lift.start()
@@ -287,6 +330,7 @@ lift.stop()
 ## Usage Examples
 
 ### Basic Lift Control Example
+
 ```python
 from hex_device import HexDeviceApi
 from hex_device.generated import public_api_types_pb2
@@ -302,36 +346,35 @@ if lift is not None:
     # Start control
     lift.start()
     print("Lift control started")
-    
+
     # Calibrate lift
     print("Calibrating lift...")
     lift.calibrate()
-    
+
     # Wait for calibration to complete
     import time
     while lift.get_state() == "LsCalibrating":
         time.sleep(0.1)
-    
+
     # Set move speed
     lift.set_move_speed(1000)  # 1000 pulse/s
     print("Move speed set to 1000 pulse/s")
-    
+
     # Move to target position (0.5 meters)
     print("Moving to 0.5 meters...")
     lift.motor_command(CommandType.POSITION, 0.5)
-    
+
     # Wait for a while
     time.sleep(2)
-    
+
     # Check current position
     if lift.has_new_data():
         position = lift.get_motor_positions()
         print(f"Current position: {position[0]} meters")
-    
+
     # Apply brake
     lift.motor_command(CommandType.BRAKE, True)
-    
+
     # Stop control
     lift.stop()
 ```
-
