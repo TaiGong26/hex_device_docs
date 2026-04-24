@@ -12,31 +12,38 @@
 2. [Class Definition](#class-definition)
 3. [Initialization](#__init__)
 4. [Properties](#properties)
+   - [cache_motion_data](#cache_motion_data)
+   - [cache_positions](#cache_positions)
+   - [cache_velocities](#cache_velocities)
+   - [cache_torques](#cache_torques)
    - [target_positions](#target_positions)
    - [target_velocities](#target_velocities)
    - [target_torques](#target_torques)
-5. [Data Checking](#data-checking)
+5. [Conversion Methods](#conversion-methods)
+   - [convert_positions_to_rad](#convert_positions_to_rad)
+   - [convert_rad_to_positions](#convert_rad_to_positions)
+6. [Data Checking](#data-checking)
    - [has_new_data](#has_new_data)
-6. [Error Methods](#error-methods)
+7. [Error Methods](#error-methods)
    - [get_motor_error_codes](#get_motor_error_codes)
-7. [State Methods](#state-methods)
+8. [State Methods](#state-methods)
    - [get_motor_state](#get_motor_state)
    - [get_motor_states](#get_motor_states)
-8. [Status Methods](#status-methods)
+9. [Status Methods](#status-methods)
    - [get_simple_motor_status](#get_simple_motor_status)
    - [get_motor_status](#get_motor_status)
-9. [Position Methods](#position-methods)
-   - [get_motor_position](#get_motor_position)
-   - [get_motor_positions](#get_motor_positions)
-   - [get_motor_encoder_positions](#get_motor_encoder_positions)
-   - [get_encoders_to_zero](#get_encoders_to_zero)
-10. [Velocity Methods](#velocity-methods)
+10. [Position Methods](#position-methods)
+    - [get_motor_position](#get_motor_position)
+    - [get_motor_positions](#get_motor_positions)
+    - [get_motor_encoder_positions](#get_motor_encoder_positions)
+    - [get_encoders_to_zero](#get_encoders_to_zero)
+11. [Velocity Methods](#velocity-methods)
     - [get_motor_velocity](#get_motor_velocity)
     - [get_motor_velocities](#get_motor_velocities)
-11. [Torque Methods](#torque-methods)
+12. [Torque Methods](#torque-methods)
     - [get_motor_torque](#get_motor_torque)
     - [get_motor_torques](#get_motor_torques)
-12. [Temperature Methods](#temperature-methods)
+13. [Temperature Methods](#temperature-methods)
     - [get_motor_driver_temperatures](#get_motor_driver_temperatures)
     - [get_motor_driver_temperature](#get_motor_driver_temperature)
     - [get_motor_temperatures](#get_motor_temperatures)
@@ -54,6 +61,8 @@
     - [motor_command](#motor_command)
     - [mit_motor_command](#mit_motor_command)
     - [construct_mit_command](#construct_mit_command)
+    - [construct_speedWithMaxCurrent_command](#construct_speedWithMaxCurrent_command)
+    - [construct_posVelAcc_command](#construct_posVelAcc_command)
 16. [Summary Methods](#summary-methods)
     - [get_motor_summary](#get_motor_summary)
 17. [Utility Methods](#utility-methods)
@@ -84,6 +93,78 @@ Automatically called by HexDeviceApi, passing in the motor count and motor group
 - `convert_rad_to_positions_func` (Optional[Callable]): Function to convert radians to positions
 
 ## Properties
+
+### cache_motion_data
+```python
+@property
+def cache_motion_data(self) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]:
+```
+Get all motor cache motion data (positions radians, velocities rad/s, torques Nm).
+
+**Returns:**
+- `Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]`: A tuple of (positions, velocities, torques)
+
+**Examples:**
+```python
+positions, velocities, torques = motor.cache_motion_data
+if positions is not None:
+    print(f"Cached positions: {positions}")
+if velocities is not None:
+    print(f"Cached velocities: {velocities}")
+if torques is not None:
+    print(f"Cached torques: {torques}")
+```
+
+### cache_positions
+```python
+@property
+def cache_positions(self) -> Optional[np.ndarray]:
+```
+Get all motor cache positions (rad).
+
+**Returns:**
+- `Optional[np.ndarray]`: Array of cached positions or None
+
+**Examples:**
+```python
+positions = motor.cache_positions
+if positions is not None:
+    print(f"Cached positions: {positions}")
+```
+
+### cache_velocities
+```python
+@property
+def cache_velocities(self) -> Optional[np.ndarray]:
+```
+Get all motor cache velocities (rad/s).
+
+**Returns:**
+- `Optional[np.ndarray]`: Array of cached velocities or None
+
+**Examples:**
+```python
+velocities = motor.cache_velocities
+if velocities is not None:
+    print(f"Cached velocities: {velocities}")
+```
+
+### cache_torques
+```python
+@property
+def cache_torques(self) -> Optional[np.ndarray]:
+```
+Get all motor cache torques (Nm).
+
+**Returns:**
+- `Optional[np.ndarray]`: Array of cached torques or None
+
+**Examples:**
+```python
+torques = motor.cache_torques
+if torques is not None:
+    print(f"Cached torques: {torques}")
+```
 
 ### target_positions
 ```python
@@ -121,6 +202,46 @@ Examples:
 ```python
 target_torques = motor.target_torques
 print(f"All motor target_torques: {target_torques}")
+```
+
+## Conversion Methods
+
+### convert_positions_to_rad
+```python
+def convert_positions_to_rad(self, positions: np.ndarray, pulse_per_rotation: np.ndarray) -> np.ndarray:
+```
+Converts encoder positions to radians. This method provides a default implementation but can be overridden by providing a custom function during instance initialization.
+
+**Parameters:**
+- `positions` (np.ndarray): Position values in encoder pulses
+- `pulse_per_rotation` (np.ndarray): Pulse per rotation values
+
+**Returns:**
+- `np.ndarray`: Position values in radians
+
+**Examples:**
+```python
+positions_rad = motor.convert_positions_to_rad(positions, pulse_per_rotation)
+print(f"Positions in radians: {positions_rad}")
+```
+
+### convert_rad_to_positions
+```python
+def convert_rad_to_positions(self, positions: np.ndarray, pulse_per_rotation: np.ndarray) -> np.ndarray:
+```
+Converts radian positions to encoder positions. This method provides a default implementation but can be overridden by providing a custom function during instance initialization.
+
+**Parameters:**
+- `positions` (np.ndarray): Position values in radians
+- `pulse_per_rotation` (np.ndarray): Pulse per rotation values
+
+**Returns:**
+- `np.ndarray`: Position values in encoder pulses
+
+**Examples:**
+```python
+positions = motor.convert_rad_to_positions(positions_rad, pulse_per_rotation)
+print(f"Positions in encoder pulses: {positions}")
 ```
 
 ## Data Checking
@@ -548,9 +669,9 @@ if radii is not None:
 
 ### motor_command
 ```python
-def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], np.ndarray]):
+def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], List[SpeedWithMaxCurrentMotorCommand], List[PosVelAccCommand], np.ndarray]):
 ```
-Sets motor commands for the device, supporting five command types: BRAKE, SPEED, POSITION, TORQUE, and MIT.
+Sets motor commands for the device, supporting seven command types: BRAKE, SPEED, POSITION, TORQUE, MIT, SPEED_WITH_MAX_CURRENT, and POS_VEL_ACC.
 
 **Parameters:**
 - `command_type` (CommandType): Type of command:
@@ -559,12 +680,16 @@ Sets motor commands for the device, supporting five command types: BRAKE, SPEED,
   - `POSITION`: Position control (rad)
   - `TORQUE`: Torque control (Nm)
   - `MIT`: MIT control with PID (List[MitMotorCommand])
+  - `SPEED_WITH_MAX_CURRENT`: Speed control with max current (List[SpeedWithMaxCurrentMotorCommand])
+  - `POS_VEL_ACC`: Position-velocity-acceleration control (List[PosVelAccCommand])
 - `values`: Command values:
   - BRAKE: `List[bool]` - brake states
   - SPEED: `List[float]` - target speeds (rad/s)
   - POSITION: `List[float]` - target positions (rad)
   - TORQUE: `List[float]` - target torques (Nm)
   - MIT: `List[MitMotorCommand]` - MIT commands with position, speed, torque, kp, kd
+  - SPEED_WITH_MAX_CURRENT: `List[SpeedWithMaxCurrentMotorCommand]` - speed commands with max current
+  - POS_VEL_ACC: `List[PosVelAccCommand]` - position-velocity-acceleration commands
 
 **Command Support by Device:**
 
@@ -575,6 +700,10 @@ Sets motor commands for the device, supporting five command types: BRAKE, SPEED,
 | POSITION | ✓ | ✗ | ✓ | ✓ | ✓ |
 | TORQUE | ✓* | ✗ | ✗ | ✗ | ✓ |
 | MIT | ✓* | ✗ | ✗ | ✗ | ✓ |
+| SPEED_WITH_MAX_CURRENT | ✓ | ✓ | ✗ | ✗ | ✓ |
+| POS_VEL_ACC | ✓ | ✓ | ✗ | ✗ | ✓ |
+
+*Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.*
 
 Examples:
 ```python
@@ -667,6 +796,69 @@ mit_commands = device.construct_mit_command(
 
 # Use with motor_command
 device.motor_command(CommandType.MIT, mit_commands)
+```
+
+### construct_speedWithMaxCurrent_command
+```python
+def construct_speedWithMaxCurrent_command(self,
+            speed: Union[np.ndarray, List[float]],
+            max_current: Union[np.ndarray, List[float]]
+        ) -> List[SpeedWithMaxCurrentMotorCommand]:
+```
+Constructs speed with max current command for each motor.
+
+**Parameters:**
+- `speed` (Union[np.ndarray, List[float]]): Target speeds for each joint (rad/s)
+- `max_current` (Union[np.ndarray, List[float]]): Maximum current for each joint (A)
+
+**Returns:**
+- `List[SpeedWithMaxCurrentMotorCommand]`: List of speed with max current commands
+
+**Examples:**
+```python
+from hex_device.motor_base import CommandType
+import numpy as np
+
+# Construct speed commands with max current
+speed_commands = device.construct_speedWithMaxCurrent_command(
+    speed=np.array([1.0, 2.0, 3.0]),
+    max_current=np.array([10.0, 10.0, 10.0])
+)
+
+device.motor_command(CommandType.SPEED_WITH_MAX_CURRENT, speed_commands)
+```
+
+### construct_posVelAcc_command
+```python
+def construct_posVelAcc_command(self,
+            position: Union[np.ndarray, List[float]],
+            velocity: Union[np.ndarray, List[float]],
+            acceleration: Union[np.ndarray, List[float]]
+        ) -> List[PosVelAccCommand]:
+```
+Constructs position-velocity-acceleration command for each motor.
+
+**Parameters:**
+- `position` (Union[np.ndarray, List[float]]): Target positions for each joint (rad)
+- `velocity` (Union[np.ndarray, List[float]]): Target velocities for each joint (rad/s)
+- `acceleration` (Union[np.ndarray, List[float]]): Target accelerations for each joint (rad/s²)
+
+**Returns:**
+- `List[PosVelAccCommand]`: List of position-velocity-acceleration commands
+
+**Examples:**
+```python
+from hex_device.motor_base import CommandType
+import numpy as np
+
+# Construct position-velocity-acceleration commands
+pos_vel_acc_commands = device.construct_posVelAcc_command(
+    position=np.array([0.0, 1.57, 3.14]),
+    velocity=np.array([0.5, 0.5, 0.5]),
+    acceleration=np.array([1.0, 1.0, 1.0])
+)
+
+device.motor_command(CommandType.POS_VEL_ACC, pos_vel_acc_commands)
 ```
 
 ## Summary Methods

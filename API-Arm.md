@@ -404,12 +404,14 @@ arm.end_effector_control(
 
 ### joint_position_control
 ```python
-def joint_position_control(self, joint_positions: List[float]):
+def joint_position_control(self, joint_positions: List[float], velocities: List[float], accelerations: List[float]):
 ```
 A more convenient joint position control mode that plans the target position before moving.
 
 **Parameters:**
 - `joint_positions` (List[float]): Joint positions in radians, length must match the motor count
+- `velocities` (List[float]): Joint velocities in rad/s, length must match the motor count
+- `accelerations` (List[float]): Joint accelerations in rad/s², length must match the motor count
 
 **Notes:**
 - This method automatically plans the joint movement path to smoothly move the arm to the target position
@@ -417,11 +419,13 @@ A more convenient joint position control mode that plans the target position bef
 - Internal joint limit validation is performed to ensure safe movement
 - The method uses the arm's built-in trajectory planning capabilities
 
-Examples:
+**Examples:**
 ```python
-# Control arm to specified joint positions
+# Control arm to specified joint positions with velocities and accelerations
 arm.joint_position_control(
-    joint_positions=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0]  # Target positions for 6 joints
+    joint_positions=[0.0, 0.5, 1.0, 0.0, 0.5, 0.0],  # Target positions for 6 joints
+    velocities=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5],        # Target velocities for 6 joints
+    accelerations=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]      # Target accelerations for 6 joints
 )
 
 # Get current joint positions and then make fine adjustments
@@ -688,6 +692,7 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `start()` - Start device control (send initialization command)
 - `stop()` - Stop device control (send stop command)
 - `get_device_summary()` - Get device status summary (name)
+- `get_status_summary()` - Get complete device status summary including arm-specific fields
 
 ### From MotorBase:
 - `target_positions` - Get all motor target positions (rad)
@@ -698,6 +703,7 @@ The `Arm` class inherits methods from both `DeviceBase` and `MotorBase`.
 - `cache_velocities` - Get all motor cache velocities (rad/s)
 - `cache_torques` - Get all motor cache torques (Nm)
 - `has_new_data()` - Check if there is new motor data
+- `get_motor_warnings()` - Get all motor warnings
 - `get_motor_error_codes()` - Get all motor error codes
 - `get_motor_state(motor_index)` - Get specified motor state
 - `get_motor_states()` - Get all motor states

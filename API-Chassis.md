@@ -112,7 +112,7 @@ print("Chassis control started")
 ```python
 def stop(self):
 ```
-Sends stop command and sets `api_control_initialized` to `False`. After calling this function, the chassis will enter Disable mode and stop connection monitoring and command listening. This is the correct way to disconnect. If you exit the program directly without calling stop, the robotic arm will enter a connection timeout error state.
+Sends stop command and sets `api_control_initialized` to `False`. After calling this function, the chassis will enter Disable mode and stop connection monitoring and command listening. This is the correct way to disconnect. If you exit the program directly without calling stop, the chassis will enter a connection timeout error state.
 
 Examples:
 ```python
@@ -253,7 +253,7 @@ if warning is not None:
 ```python
 def get_session_holder(self) -> int:
 ```
-Gets the session ID of the current controller. Returns 0 when no one is controlling the robotic arm.
+Gets the session ID of the current controller. Returns 0 when no one is controlling the chassis.
 
 **Returns:**
 - `int`: Session ID of the current controller, 0 if no one is controlling
@@ -387,12 +387,22 @@ def get_status_summary(self) -> Dict[str, Any]:
 ```
 Gets the complete chassis status summary, including device status, motor status, chassis status, battery information, etc.
 
-Examples:
+**Returns:**
+- `Dict[str, Any]`: Chassis status summary containing:
+  - Device information: `name`, `device_id`, `has_new_data`, `last_update_time`
+  - Chassis status: `base_state`, `api_control_initialized`, `parking_stop_detail`, `warning`
+  - Battery information: `battery_info` (voltage, thousandth, charging)
+  - Vehicle data: `vehicle_speed`, `vehicle_position`
+
+**Examples:**
 ```python
 summary = chassis.get_status_summary()
 print(f"Base state: {summary['base_state']}")
+print(f"API control: {summary['api_control_initialized']}")
 print(f"Battery voltage: {summary['battery_info']['voltage']}V")
+print(f"Vehicle speed: {summary['vehicle_speed']}")
 print(f"Vehicle position: {summary['vehicle_position']}")
+print(f"Warning: {summary['warning']}")
 ```
 
 <!-- 

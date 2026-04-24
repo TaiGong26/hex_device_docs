@@ -22,7 +22,10 @@
    - [get_joint_limits](#get_joint_limits)
 6. [Summary Methods](#summary-methods)
    - [get_hands_summary](#get_hands_summary)
-7. [Inherited Methods](#inherited-methods)
+7. [Conversion Methods](#conversion-methods)
+   - [convert_positions_to_rad_func](#convert_positions_to_rad_func)
+   - [convert_rad_to_positions_func](#convert_rad_to_positions_func)
+8. [Inherited Methods](#inherited-methods)
 
 
 ## Overview
@@ -198,6 +201,36 @@ print(f"Current positions: {summary['motor_positions']}")
 print(f"Current velocities: {summary['motor_velocities']}")
 print(f"Current torques: {summary['motor_torques']}")
 ```
+
+## convert_positions_to_rad_func
+```python
+def convert_positions_to_rad_func(self, positions: np.ndarray, pulse_per_rotation: np.ndarray) -> np.ndarray:
+```
+Converts pulse positions to radians.
+
+**Parameters:**
+- `positions` (np.ndarray): Position values in pulses
+- `pulse_per_rotation` (np.ndarray): Pulse per rotation values
+
+**Returns:**
+- `np.ndarray`: Position values in radians
+
+**Formula:** `(positions - 65535.0 / 2.0) / pulse_per_rotation * 2 * π`
+
+## convert_rad_to_positions_func
+```python
+def convert_rad_to_positions_func(self, positions: np.ndarray, pulse_per_rotation: np.ndarray) -> np.ndarray:
+```
+Converts radian positions to pulses.
+
+**Parameters:**
+- `positions` (np.ndarray): Position values in radians
+- `pulse_per_rotation` (np.ndarray): Pulse per rotation values
+
+**Returns:**
+- `np.ndarray`: Position values in pulses
+
+**Formula:** `positions / (2 * π) * pulse_per_rotation + 65535.0 / 2.0`
 
 ## Inherited Methods
 
