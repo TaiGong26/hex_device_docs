@@ -40,7 +40,7 @@
     - [get_motor_torque](#get_motor_torque)
     - [get_motor_torques](#get_motor_torques)
 12. [Error Methods](#error-methods)
-   - [get_motor_error_codes](#get_motor_error_codes)
+    - [get_motor_error_codes](#get_motor_error_codes)
 13. [Temperature Methods](#temperature-methods)
     - [get_motor_driver_temperatures](#get_motor_driver_temperatures)
     - [get_motor_driver_temperature](#get_motor_driver_temperature)

@@ -1,57 +1,62 @@
+# hex_device Installation Guide
 ### Prerequisites
-
 - **Python 3.9 or higher**
 - Anaconda Distribution (recommended for beginners) - includes Python, NumPy, and commonly used scientific computing packages
 
-### Option 1: Package Installation
-To install the library in your Python environment through pip:
+---
+
+### Install Protobuf Compiler (`protoc`)
+**Required for compiling protocol buffer messages**
+```bash
+# For Linux arm64
+wget https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-aarch_64.zip
+sudo unzip protoc-27.1-linux-aarch_64.zip -d /usr/local
+rm protoc-27.1-linux-aarch_64.zip
+
+# Verify installation
+protoc --version  # Should be 3.21.12 or newer
 ```
+
+---
+
+### Compile Protocol Buffer Messages
+**Execute this step before installation/usage**
+```bash
+# Create generated directory and compile proto files
+mkdir -p ./hex_device/generated
+protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto && cp ./proto-public-api/version.py ./hex_device/generated/version.py
+```
+
+---
+
+## Installation Options
+Choose one of the following options based on your usage needs:
+
+### Option 1: Direct Pip Installation (For Regular Users)
+Install the library directly from PyPI for regular usage (no source code required):
+```bash
 python3 -m pip install hex_device
 ```
 
-Or install from source code:
-
-```
+### Option 2: Source Code Installation (Local Build)
+Install the library from local source code (for customized builds):
+```bash
 python3 -m pip install .
 ```
 
-**Note:** This library requires newer protoc. If compilation fails, please try to install protoc-27.1 using the binary installation method below.
+### Option 3: Direct Add (Developer Mode, No Global Installation)
+Use the library directly from source (for development/debugging, no installation required):
+1. **Install project dependencies**
+    ```bash
+    python3 -m pip install -r requirements.txt
+    ```
 
-   **Installing protoc-27.1 through binary:**
-   ```bash
-   # For Linux x86_64
-   wget https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-x86_64.zip
-   sudo unzip protoc-27.1-linux-x86_64.zip -d /usr/local
-   rm protoc-27.1-linux-x86_64.zip
-   
-   # For Linux arm64
-   wget https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-aarch_64.zip
-   sudo unzip protoc-27.1-linux-aarch_64.zip -d /usr/local
-   rm protoc-27.1-linux-aarch_64.zip
-   
-   #  Verify installation
-   protoc --version  # Should show libprotoc 27.1
-   ```
+2. **Add library path to your Python script**
+    ```python
+    import sys
+    # Replace <your project path> with the actual path to hex_device_python
+    sys.path.insert(1, '<your project path>/hex_device_python')
+    sys.path.insert(1, '<your project path>/hex_device_python/hex_device/generated')
+    ```
 
-### Option 2: Direct Add
-
-If you prefer to run the library without installing it in your Python environment:
-
-1. **Compile Protocol Buffer messages:**
-   ```bash
-   mkdir ./hex_device/generated
-   protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto
-   ```
-
-2. **Install dependencies:**
-```bash
-python3 -m pip install -r requirements.txt
-```
-
-3. **Add the library path to your script:**
-Add the library path to your script:
-```python
-import sys
-sys.path.insert(1, '<your project path>/hex_device_python')
-sys.path.insert(1, '<your project path>/hex_device_python/hex_device/generated')
-```
+---
