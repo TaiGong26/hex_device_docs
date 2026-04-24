@@ -2,6 +2,12 @@
 
 Welcome to [HEX Device Python Library](https://github.com/hexfellow/hex_device_python)! This is a Python library for controlling HEX series robot devices, providing a unified API interface to manage and control various robot hardware devices.
 
+## 📚 Documentation Navigation
+
+- **[Installation Guide](Installation-Guide.md)** - Detailed installation steps and environment configuration
+- **[Function Details](API-List.md)** - Complete API function documentation
+- **[Change Log](Change-Log.md)** - Record the modifications and development plans of each version
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -31,11 +37,6 @@ Please checkout the [test/main.py](https://github.com/hexfellow/hex_device_pytho
 - **Real-time Feedback**: Obtains real-time status of motor position, velocity, torque, temperature, voltage, etc.
 - **Safety Monitoring**: Built-in motor status monitoring and error detection mechanisms
 
-## 📚 Documentation Navigation
-
-- **[Installation Guide](Installation-Guide.md)** - Detailed installation steps and environment configuration
-- **[Function Details](API-List.md)** - Complete API function documentation
-- **[Change Log](Change-Log.md)** - Record the modifications and development plans of each version
 
 ## 🎯 Supported Device Types
 

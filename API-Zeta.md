@@ -18,17 +18,15 @@
    - [is_calibrated](#is_calibrated)
 5. [Control Methods](#control-methods)
    - [set_move_speed](#set_move_speed)
+   - [motor_command](#motor_command)
 6. [State Methods](#state-methods)
    - [get_joint_limits](#get_joint_limits)
    - [get_state](#get_state)
    - [get_my_session_id](#get_my_session_id)
    - [get_parking_stop_detail](#get_parking_stop_detail)
    - [get_status_summary](#get_status_summary)
-7. [motor_command](#motor_command)
 7. [Inherited Methods](#inherited-methods)
 8. [Usage Examples](#usage-examples)
-
-
 
 ## Overview
 
@@ -44,7 +42,9 @@ class ZetaLift(DeviceBase, MotorBase):
 
 The common functions can be found in: [DeviceBase](API-Common.md#DeviceBase) and [MotorBase](API-Motorbase.md).
 
-## `__init__`
+## Initialization
+
+### `__init__`
 ```python
 def __init__(self, motor_count: int, robot_type: int, proto_version: tuple[int, int], name: str = "ZetaLift", control_hz: int = 500, send_message_callback=None):
 ```
@@ -64,7 +64,9 @@ Automatically called by HexDeviceApi to initialize the ZetaLift device.
 # Users typically don't need to call this directly
 ```
 
-## calibrate
+## Calibrate Methods
+
+### calibrate
 ```python
 def calibrate(self):
 ```
@@ -78,22 +80,7 @@ while not zeta_lift.is_calibrated():
     await asyncio.sleep(0.1)
 ```
 
-## set_move_speed
-```python
-def set_move_speed(self, speed: List[float]):
-```
-Sets the maximum speed for position mode movement. The speed values are taken as absolute values.
-
-**Parameters:**
-- `speed` (List[float]): List of maximum speeds for each motor in position mode
-
-**Examples:**
-```python
-# Set maximum speed for position mode
-zeta_lift.set_move_speed([0.5, 0.5, 0.5])  # Set speed for 3 motors
-```
-
-## is_calibrated
+### is_calibrated
 ```python
 def is_calibrated(self) -> bool:
 ```
@@ -110,110 +97,25 @@ else:
     print("ZetaLift needs calibration")
 ```
 
-## get_joint_limits
-```python
-def get_joint_limits(self) -> Optional[List[List[float]]]:
-```
-Gets the joint limits for all motors.
+## Control Methods
 
-**Returns:**
-- `Optional[List[List[float]]]`: Joint limits, or None if not available. The list is in the format: `[[min_pos, max_pos], [min_vel, max_vel], [min_acc, max_acc]]`
-  - `min_pos`, `max_pos`: Minimum and maximum position limits (pulses)
-  - `min_vel`, `max_vel`: Minimum and maximum velocity limits (rad/s)
-  - `min_acc`, `max_acc`: Minimum and maximum acceleration limits (rad/s²)
+### set_move_speed
+```python
+def set_move_speed(self, speed: List[float]):
+```
+Sets the maximum speed for position mode movement. The speed values are taken as absolute values.
+
+**Parameters:**
+- `speed` (List[float]): List of maximum speeds for each motor in position mode
 
 **Examples:**
 ```python
-limits = zeta_lift.get_joint_limits()
-if limits is not None:
-    for i, motor_limits in enumerate(limits):
-        min_pos, max_pos, min_vel, max_vel, min_acc, max_acc = motor_limits
-        print(f"Motor {i}: pos=[{min_pos}, {max_pos}], vel=[{min_vel}, {max_vel}], acc=[{min_acc}, {max_acc}]")
+# Set maximum speed for position mode
+zeta_lift.set_move_speed([0.5, 0.5, 0.5])  # Set speed for 3 motors
 ```
 
-## get_state
-```python
-def get_state(self) -> str:
-```
-Gets the current lift state.
 
-**Returns:**
-- `str`: Current lift state name. Possible values:
-  - `"LsBrake"`: Brake state
-  - `"LsCalibrating"`: Calibrating state
-  - `"LsAlgrithmControl"`: Algorithm control state
-  - `"LsOvertakeControl"`: Overtake control state
-  - `"LsEmergencyStop"`: Emergency stop state
-
-**Examples:**
-```python
-state = zeta_lift.get_state()
-print(f"Current lift state: {state}")
-if state == "LsEmergencyStop":
-    print("Warning: Lift is in emergency stop state")
-```
-
-## get_my_session_id
-```python
-def get_my_session_id(self) -> int:
-```
-Gets the session ID associated with this device.
-
-**Returns:**
-- `int`: Session ID
-
-**Examples:**
-```python
-session_id = zeta_lift.get_my_session_id()
-print(f"Session ID: {session_id}")
-```
-
-## get_parking_stop_detail
-```python
-def get_parking_stop_detail(self) -> public_api_types_pb2.ParkingStopDetail:
-```
-Gets the parking stop details, which contain information about why the lift stopped.
-
-**Returns:**
-- `ParkingStopDetail`: Parking stop detail object containing:
-  - `reason` (str): Reason for parking stop
-  - `category` (ParkingStopCategory): Category of parking stop
-  - `is_remotely_clearable` (bool): Whether the stop can be cleared remotely
-
-**Examples:**
-```python
-stop_detail = zeta_lift.get_parking_stop_detail()
-if stop_detail.reason:
-    print(f"Parking stop reason: {stop_detail.reason}")
-    print(f"Category: {stop_detail.category}")
-    print(f"Remotely clearable: {stop_detail.is_remotely_clearable}")
-```
-
-## get_status_summary
-```python
-def get_status_summary(self) -> Dict[str, Any]:
-```
-Gets comprehensive ZetaLift status summary including device information, calibration status, state, position limits, and parking stop details.
-
-**Returns:**
-- `Dict[str, Any]`: Dictionary containing:
-  - `name`: Device name
-  - `calibrated`: Whether the lift is calibrated (bool)
-  - `state`: Current lift state (str)
-  - `max_pos`: Maximum position limits for each motor (List[int])
-  - `min_pos`: Minimum position limits for each motor (List[int])
-  - `parking_stop_detail`: Parking stop detail object
-
-**Examples:**
-```python
-summary = zeta_lift.get_status_summary()
-print(f"Device name: {summary['name']}")
-print(f"Calibrated: {summary['calibrated']}")
-print(f"State: {summary['state']}")
-print(f"Position limits: min={summary['min_pos']}, max={summary['max_pos']}")
-```
-
-## motor_command
+### motor_command
 ```python
 def motor_command(self, command_type: CommandType, values: List[float]):
 ```
@@ -240,6 +142,111 @@ zeta_lift.motor_command(CommandType.SPEED, [0.5, -0.5, 0.5])
 # Set position command
 zeta_lift.motor_command(CommandType.POSITION, [0.57, 0.0, 0.1])
 
+```
+
+## State Methods
+
+### get_joint_limits
+```python
+def get_joint_limits(self) -> Optional[List[List[float]]]:
+```
+Gets the joint limits for all motors.
+
+**Returns:**
+- `Optional[List[List[float]]]`: Joint limits, or None if not available. The list is in the format: `[[min_pos, max_pos], [min_vel, max_vel], [min_acc, max_acc]]`
+  - `min_pos`, `max_pos`: Minimum and maximum position limits (pulses)
+  - `min_vel`, `max_vel`: Minimum and maximum velocity limits (rad/s)
+  - `min_acc`, `max_acc`: Minimum and maximum acceleration limits (rad/s²)
+
+**Examples:**
+```python
+limits = zeta_lift.get_joint_limits()
+if limits is not None:
+    for i, motor_limits in enumerate(limits):
+        min_pos, max_pos, min_vel, max_vel, min_acc, max_acc = motor_limits
+        print(f"Motor {i}: pos=[{min_pos}, {max_pos}], vel=[{min_vel}, {max_vel}], acc=[{min_acc}, {max_acc}]")
+```
+
+### get_state
+```python
+def get_state(self) -> str:
+```
+Gets the current lift state.
+
+**Returns:**
+- `str`: Current lift state name. Possible values:
+  - `"LsBrake"`: Brake state
+  - `"LsCalibrating"`: Calibrating state
+  - `"LsAlgrithmControl"`: Algorithm control state
+  - `"LsOvertakeControl"`: Overtake control state
+  - `"LsEmergencyStop"`: Emergency stop state
+
+**Examples:**
+```python
+state = zeta_lift.get_state()
+print(f"Current lift state: {state}")
+if state == "LsEmergencyStop":
+    print("Warning: Lift is in emergency stop state")
+```
+
+### get_my_session_id
+```python
+def get_my_session_id(self) -> int:
+```
+Gets the session ID associated with this device.
+
+**Returns:**
+- `int`: Session ID
+
+**Examples:**
+```python
+session_id = zeta_lift.get_my_session_id()
+print(f"Session ID: {session_id}")
+```
+
+### get_parking_stop_detail
+```python
+def get_parking_stop_detail(self) -> public_api_types_pb2.ParkingStopDetail:
+```
+Gets the parking stop details, which contain information about why the lift stopped.
+
+**Returns:**
+- `ParkingStopDetail`: Parking stop detail object containing:
+  - `reason` (str): Reason for parking stop
+  - `category` (ParkingStopCategory): Category of parking stop
+  - `is_remotely_clearable` (bool): Whether the stop can be cleared remotely
+
+**Examples:**
+```python
+stop_detail = zeta_lift.get_parking_stop_detail()
+if stop_detail.reason:
+    print(f"Parking stop reason: {stop_detail.reason}")
+    print(f"Category: {stop_detail.category}")
+    print(f"Remotely clearable: {stop_detail.is_remotely_clearable}")
+```
+
+### get_status_summary
+```python
+def get_status_summary(self) -> Dict[str, Any]:
+```
+Gets comprehensive ZetaLift status summary including device information, calibration status, state, position limits, and parking stop details.
+
+**Returns:**
+- `Dict[str, Any]`: Dictionary containing:
+  - `name`: Device name
+  - `calibrated`: Whether the lift is calibrated (bool)
+  - `state`: Current lift state (str)
+  - `max_pos`: Maximum position limits for each motor (List[int])
+  - `min_pos`: Minimum position limits for each motor (List[int])
+  - `parking_stop_detail`: Parking stop detail object
+
+**Examples:**
+```python
+summary = zeta_lift.get_status_summary()
+print(f"Device name: {summary['name']}")
+print(f"Calibrated: {summary['calibrated']}")
+print(f"State: {summary['state']}")
+print(f"Position limits: min={summary['min_pos']}, max={summary['max_pos']}")
 ```
 
 ## Inherited Methods
