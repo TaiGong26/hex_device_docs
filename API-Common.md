@@ -182,39 +182,6 @@ while not api.is_api_exit():
         elif data.HasField('arm_status'):
             # Handle arm status
             pass
-
-# Stream mode usage example
-# 1. Define callback function to handle downlink messages
-def send_down_callback(message):
-    """Handle messages sent to the device"""
-    # Process the message here, e.g., send over custom protocol
-    print(f"Sending message of length: {len(message)}")
-
-# 2. Create API instance with stream mode enabled
-api = HexDeviceApi(ws_url=None, send_down_callback=send_down_callback)
-
-# 3. Simulate data input (in real application, get from external data source)
-def simulate_data_input(api):
-    """Simulate data input to API"""
-    while not api.is_api_exit():
-        # Here you should get APIUp messages from actual data source
-        # e.g., from network, file, or other devices
-        # Then call api._process_api_up(api_up_message)
-        time.sleep(0.01)  # Simulate 100Hz data input
-
-# 4. Start data input thread
-import threading
-import time
-data_thread = threading.Thread(target=simulate_data_input, args=(api,))
-data_thread.daemon = True
-data_thread.start()
-
-# 5. Process output data
-while not api.is_api_exit():
-    (data, num) = api.get_raw_data()
-    if data is not None:
-        # Process received data
-        pass
 ```
 
 # MotorBase
