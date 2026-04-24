@@ -32,10 +32,10 @@
    - [get_arm_series](#get_arm_series)
    - [get_arm_name](#get_arm_name)
 7. [Advanced Control Methods](#advanced-control-methods)
-   - [end_effector_control](#end_effector_control)
+   <!-- - [end_effector_control](#end_effector_control)
    - [enable_free_drag](#enable_free_drag)
    - [enable_zero_current_control](#enable_zero_current_control)
-   - [compensated_mit_control](#compensated_mit_control)
+   - [compensated_mit_control](#compensated_mit_control) -->
 8. [Validation Methods](#validation-methods)
    - [validate_joint_positions](#validate_joint_positions)
    - [validate_joint_velocities](#validate_joint_velocities)
@@ -366,6 +366,8 @@ if arm_name:
 
 ## Advanced Control Methods
 
+> **Note:** This method is under development
+<!-- 
 ### end_effector_control
 ```python
 def end_effector_control(self, position: Union[List[float], Tuple[float, float, float]], orientation: Union[List[float], Tuple[float, float, float, float], None] = None, gravity_acc: Optional[List[float]] = None):
@@ -523,7 +525,7 @@ arm.compensated_mit_control(
     gravity_acc=[0.0, 0.0, 9.81]  # Gravity acceleration
 )
 ```
-
+ -->
 ## Validation Methods
 
 ### validate_joint_positions

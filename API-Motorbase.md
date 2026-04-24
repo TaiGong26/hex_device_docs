@@ -62,7 +62,7 @@
     - [mit_motor_command](#mit_motor_command)
     - [construct_mit_command](#construct_mit_command)
     - [construct_speedWithMaxCurrent_command](#construct_speedWithMaxCurrent_command)
-    - [construct_posVelAcc_command](#construct_posVelAcc_command)
+    <!-- - [construct_posVelAcc_command](#construct_posVelAcc_command) -->
 16. [Summary Methods](#summary-methods)
     - [get_motor_summary](#get_motor_summary)
 17. [Utility Methods](#utility-methods)
@@ -671,7 +671,7 @@ if radii is not None:
 ```python
 def motor_command(self, command_type: CommandType, values: Union[List[bool], List[float], List[MitMotorCommand], List[SpeedWithMaxCurrentMotorCommand], List[PosVelAccCommand], np.ndarray]):
 ```
-Sets motor commands for the device, supporting seven command types: BRAKE, SPEED, POSITION, TORQUE, MIT, SPEED_WITH_MAX_CURRENT, and POS_VEL_ACC.
+Sets motor commands for the device, supporting seven command types: BRAKE, SPEED, POSITION, TORQUE, MIT, SPEED_WITH_MAX_CURRENT.
 
 **Parameters:**
 - `command_type` (CommandType): Type of command:
@@ -681,7 +681,7 @@ Sets motor commands for the device, supporting seven command types: BRAKE, SPEED
   - `TORQUE`: Torque control (Nm)
   - `MIT`: MIT control with PID (List[MitMotorCommand])
   - `SPEED_WITH_MAX_CURRENT`: Speed control with max current (List[SpeedWithMaxCurrentMotorCommand])
-  - `POS_VEL_ACC`: Position-velocity-acceleration control (List[PosVelAccCommand])
+  <!-- - `POS_VEL_ACC`: Position-velocity-acceleration control (List[PosVelAccCommand]) -->
 - `values`: Command values:
   - BRAKE: `List[bool]` - brake states
   - SPEED: `List[float]` - target speeds (rad/s)
@@ -689,9 +689,9 @@ Sets motor commands for the device, supporting seven command types: BRAKE, SPEED
   - TORQUE: `List[float]` - target torques (Nm)
   - MIT: `List[MitMotorCommand]` - MIT commands with position, speed, torque, kp, kd
   - SPEED_WITH_MAX_CURRENT: `List[SpeedWithMaxCurrentMotorCommand]` - speed commands with max current
-  - POS_VEL_ACC: `List[PosVelAccCommand]` - position-velocity-acceleration commands
+  <!-- - POS_VEL_ACC: `List[PosVelAccCommand]` - position-velocity-acceleration commands -->
 
-**Command Support by Device:**
+**Motor Command Support by Device:**
 
 | Command | Arm | Chassis | ZetaLift | LinearLift | Hands |
 |---------|-----|---------|----------|------------|-------|
@@ -700,8 +700,8 @@ Sets motor commands for the device, supporting seven command types: BRAKE, SPEED
 | POSITION | ✓ | ✗ | ✓ | ✓ | ✓ |
 | TORQUE | ✓* | ✗ | ✗ | ✗ | ✓ |
 | MIT | ✓* | ✗ | ✗ | ✗ | ✓ |
-| SPEED_WITH_MAX_CURRENT | ✓ | ✓ | ✗ | ✗ | ✓ |
-| POS_VEL_ACC | ✓ | ✓ | ✗ | ✗ | ✓ |
+| SPEED_WITH_MAX_CURRENT | ✗ | ✓ | ✗ | ✗ | ✗ |
+<!-- | POS_VEL_ACC | ✗ | ✗ | ✗ | ✗ | ✗ | -->
 
 *Note: Arm's TORQUE and MIT commands require `enable_zero_current_control()` to be called first.*
 
@@ -731,6 +731,15 @@ mit_commands = device.construct_mit_command(
 )
 
 device.motor_command(CommandType.MIT, mit_commands)
+
+# SPEED_WITH_MAX_CURRENT command - speed control with max current limit (A)
+speed_commands = device.construct_speedWithMaxCurrent_command(
+    speed=np.array([1.0, 2.0, 3.0]),
+    max_current=np.array([10.0, 10.0, 10.0])
+)
+
+device.motor_command(CommandType.SPEED_WITH_MAX_CURRENT, speed_commands)
+
 ```
 
 ### mit_motor_command
@@ -827,7 +836,7 @@ speed_commands = device.construct_speedWithMaxCurrent_command(
 
 device.motor_command(CommandType.SPEED_WITH_MAX_CURRENT, speed_commands)
 ```
-
+<!-- 
 ### construct_posVelAcc_command
 ```python
 def construct_posVelAcc_command(self,
@@ -859,7 +868,8 @@ pos_vel_acc_commands = device.construct_posVelAcc_command(
 )
 
 device.motor_command(CommandType.POS_VEL_ACC, pos_vel_acc_commands)
-```
+``` 
+-->
 
 ## Summary Methods
 
