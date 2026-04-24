@@ -18,17 +18,15 @@
    - [is_calibrated](#is_calibrated)
 5. [Control Methods](#control-methods)
    - [set_move_speed](#set_move_speed)
+   - [motor_command](#motor_command)
 6. [State Methods](#state-methods)
    - [get_joint_limits](#get_joint_limits)
    - [get_state](#get_state)
    - [get_my_session_id](#get_my_session_id)
    - [get_parking_stop_detail](#get_parking_stop_detail)
    - [get_status_summary](#get_status_summary)
-7. [motor_command](#motor_command)
 7. [Inherited Methods](#inherited-methods)
 8. [Usage Examples](#usage-examples)
-
-
 
 ## Overview
 

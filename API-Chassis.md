@@ -17,6 +17,10 @@
    - [stop](#stop)
    - [enable](#enable)
    - [disable](#disable)
+8. [Command Methods](#command-methods)
+   - [set_vehicle_speed](#set_vehicle_speed)
+   - [clear_parking_stop](#clear_parking_stop)
+   - [motor_command](#motor_command)
 6. [Odometry Methods](#odometry-methods)
    - [clear_odom_bias](#clear_odom_bias)
    - [get_vehicle_speed](#get_vehicle_speed)
@@ -31,10 +35,7 @@
    - [get_my_session_id](#get_my_session_id)
    - [is_timeout](#is_timeout)
    - [get_status_summary](#get_status_summary)
-8. [Command Methods](#command-methods)
-   - [motor_command](#motor_command)
-   - [set_vehicle_speed](#set_vehicle_speed)
-   - [clear_parking_stop](#clear_parking_stop)
+
 
 
 ## Overview
