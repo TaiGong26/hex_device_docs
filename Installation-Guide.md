@@ -5,30 +5,6 @@
 
 ---
 
-### Install Protobuf Compiler (`protoc`)
-**Required for compiling protocol buffer messages**
-```bash
-# For Linux arm64
-wget https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-aarch_64.zip
-sudo unzip protoc-27.1-linux-aarch_64.zip -d /usr/local
-rm protoc-27.1-linux-aarch_64.zip
-
-# Verify installation
-protoc --version  # Should be 3.21.12 or newer
-```
-
----
-
-### Compile Protocol Buffer Messages
-**Execute this step before installation/usage**
-```bash
-# Create generated directory and compile proto files
-mkdir -p ./hex_device/generated
-protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto && cp ./proto-public-api/version.py ./hex_device/generated/version.py
-```
-
----
-
 ## Installation Options
 Choose one of the following options based on your usage needs:
 
@@ -40,12 +16,20 @@ python3 -m pip install hex_device
 
 ### Option 2: Source Code Installation (Local Build)
 Install the library from local source code (for customized builds):
+
+**Prerequisites:**
+- `protoc` v27.1 required. See [**Install Protobuf Compiler**](#install-protobuf-compiler-protoc)
+
 ```bash
 python3 -m pip install .
 ```
 
-### Option 3: Direct Add (Developer Mode, No Global Installation)
+### Option 3: Direct Add
 Use the library directly from source (for development/debugging, no installation required):
+
+**Prerequisites:**
+- `protoc` v27.1 required. See [**Install Protobuf Compiler**](#install-protobuf-compiler-protoc)
+
 1. **Install project dependencies**
     ```bash
     python3 -m pip install -r requirements.txt
@@ -58,5 +42,32 @@ Use the library directly from source (for development/debugging, no installation
     sys.path.insert(1, '<your project path>/hex_device_python')
     sys.path.insert(1, '<your project path>/hex_device_python/hex_device/generated')
     ```
+
+---
+
+### Install Protobuf Compiler (`protoc`)
+**Required for compiling protocol buffer messages**
+
+**Version: ==27.1 required**
+
+```bash
+# For Linux arm64
+wget https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-aarch_64.zip
+
+sudo unzip protoc-27.1-linux-aarch_64.zip -d /usr/local
+rm protoc-27.1-linux-aarch_64.zip
+
+# Verify installation
+protoc --version  # Should show : libprotoc 27.1
+```
+---
+
+### Compile Protocol Buffer Messages
+**Execute this step before installation/usage**
+```bash
+# Create generated directory and compile proto files
+mkdir -p ./hex_device/generated
+protoc --proto_path=proto-public-api --python_out=hex_device/generated proto-public-api/*.proto && cp ./proto-public-api/version.py ./hex_device/generated/version.py
+```
 
 ---
