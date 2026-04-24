@@ -67,8 +67,6 @@
     - [get_motor_summary](#get_motor_summary)
 17. [Utility Methods](#utility-methods)
     - [flush_motor_data](#flush_motor_data)
-18. [Best Practices](#best-practices)
-19. [Troubleshooting](#troubleshooting)
 
 ## Overview
 

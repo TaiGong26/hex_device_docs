@@ -43,6 +43,11 @@
 9. [Configuration Management](#configuration-management)
    - [reload_arm_config_from_dict](#reload_arm_config_from_dict)
 10. [Motion History Management](#motion-history-management)
+    - [get_last_positions](#get_last_positions)
+    - [get_last_velocities](#get_last_velocities)
+    - [clear_position_history](#clear_position_history)
+    - [clear_velocity_history](#clear_velocity_history)
+    - [clear_motion_history](#clear_motion_history)
 
 
 ## Overview
@@ -599,7 +604,7 @@ else:
 ```
 
 ## Motion History Management
-
+<!-- 
 ### set_initial_positions
 ```python
 def set_initial_positions(self, positions: List[float]):
@@ -623,7 +628,7 @@ Examples:
 initial_vel = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 arm.set_initial_velocities(initial_vel)
 ```
-
+ -->
 ### get_last_positions
 ```python
 def get_last_positions(self) -> Optional[List[float]]:
