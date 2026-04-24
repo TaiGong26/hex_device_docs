@@ -17,11 +17,11 @@
 - **[DeviceBase](API-Common.md#Devicebase)** - Device base class providing common device operations
   - Basic Control: Start/stop control
   - Status Management: Device status retrieval
+- **[OptionalDeviceBase](API-Common.md#OptionalDeviceBase)** - Optional device base class
+  - Auxiliary Device Management: Device status retrieval
 - **[MotorBase](API-Motorbase.md)** - Motor base class providing common motor control
   - Motor Control: Speed control, position control
   - Status Monitoring: Motor status retrieval
-- **[OptionalDeviceBase](API-Common.md#OptionalDeviceBase)** - Optional device base class
-  - Auxiliary Device Management: Device status retrieval
 
 ### Chassis Devices
 - **[Chassis](API-Chassis.md)** - Chassis control supporting multiple robot types

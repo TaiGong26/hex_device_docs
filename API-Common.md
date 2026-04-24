@@ -9,11 +9,30 @@
 ## Table of Contents
 
 1. [HexDeviceApi](#hexdeviceapi)
+   - [Initialization](#__init__)
+   - [close](#close)
+   - [is_api_exit](#is_api_exit)
+   - [get_raw_data](#get_raw_data)
+   - [device_list](#device_list)
+   - [optional_device_list](#optional_device_list)
+   - [find_device_by_robot_type](#find_device_by_robot_type)
+   - [find_optional_device_by_id](#find_optional_device_by_id)
+   - [find_optional_device_by_robot_type](#find_optional_device_by_robot_type)
+   - [get_device_task_status](#get_device_task_status)
 2. [DeviceBase](#devicebase)
+   - [Initialization](#__init__)
+   - [start](#start)
+   - [stop](#stop)
+   - [get_device_summary](#get_device_summary)
 3. [OptionalDeviceBase](#optionaldevicebase)
+   - [Initialization](#__init__)
+   - [get_device_summary](#get_device_summary-1)
 4. [MotorBase](#motorbase)
+   - [Overview](#overview)
+   - [Key Features](#key-features)
+   - [Documentation](#documentation)
 
-## HexDeviceApi
+# HexDeviceApi
 
 ## `__init__`
 ```python
@@ -33,6 +52,73 @@ Examples:
 from hex_device import HexDeviceApi
 api = HexDeviceApi(ws_url=args.url, control_hz=250, enable_kcp=True, local_port=52323)
 ```
+
+## close
+```python
+def close(self):
+```
+Cleans up all asynchronous threads and closes the API interface.  
+Examples:
+```python
+try:
+    while not api.is_api_exit():
+        pass
+except KeyboardInterrupt:
+    print("Received Ctrl-C.")
+finally:
+    api.close()
+```
+
+## is_api_exit
+```python
+def is_api_exit(self) -> bool:
+```
+Checks if the API has exited.  
+Examples:
+```python
+try:
+    while not api.is_api_exit():
+        pass
+except KeyboardInterrupt:
+    print("Received Ctrl-C.")
+finally:
+    api.close()
+```
+
+## get_raw_data
+```python
+def get_raw_data(self) -> Tuple[Optional[public_api_up_pb2.APIUp], int]:
+```
+Returns a tuple of the oldest buffered `APIUp` protobuf message and the remaining queue length. The first element is `None` if the buffer is empty. Internally the API maintains a sliding window buffer (maximum length `RAW_DATA_LEN`, equal to 50 frames). By consuming the queue frequently you can reconstruct a lossless real-time stream.
+
+**Parameters:**
+None
+
+**Returns:**
+- `Tuple[Optional[public_api_up_pb2.APIUp], int]`: A tuple containing:
+  - The oldest buffered `APIUp` protobuf message, or `None` if the buffer is empty
+  - The remaining queue length in the buffer
+
+**Notes:**
+- The buffer has a maximum capacity of 50 frames. When the buffer is full, the oldest message is automatically removed to make room for new messages.
+- This method is thread-safe and can be called from multiple threads simultaneously.
+- The `APIUp` message contains all device status information, including base status, arm status, and secondary device status.
+
+Examples:
+```python
+# Basic usage example
+while not api.is_api_exit():
+    (data, num) = api.get_raw_data()
+    if data is not None:
+        # Process raw data
+        if data.HasField('base_status'):
+            # Handle chassis status
+            pass
+        elif data.HasField('arm_status'):
+            # Handle arm status
+            pass
+```
+
 
 ## device_list
 ```python
@@ -118,123 +204,6 @@ for device_name, task_info in status['device_tasks'].items():
     print(f"Device {device_name}: task_done={task_info['task_done']}, task_cancelled={task_info['task_cancelled']}")
 ```
 
-## close
-```python
-def close(self):
-```
-Cleans up all asynchronous threads and closes the API interface.  
-Examples:
-```python
-try:
-    while not api.is_api_exit():
-        pass
-except KeyboardInterrupt:
-    print("Received Ctrl-C.")
-finally:
-    api.close()
-```
-
-## is_api_exit
-```python
-def is_api_exit(self) -> bool:
-```
-Checks if the API has exited.  
-Examples:
-```python
-try:
-    while not api.is_api_exit():
-        pass
-except KeyboardInterrupt:
-    print("Received Ctrl-C.")
-finally:
-    api.close()
-```
-
-## get_raw_data
-```python
-def get_raw_data(self) -> Tuple[Optional[public_api_up_pb2.APIUp], int]:
-```
-Returns a tuple of the oldest buffered `APIUp` protobuf message and the remaining queue length. The first element is `None` if the buffer is empty. Internally the API maintains a sliding window buffer (maximum length `RAW_DATA_LEN`, equal to 50 frames). By consuming the queue frequently you can reconstruct a lossless real-time stream.
-
-**Parameters:**
-None
-
-**Returns:**
-- `Tuple[Optional[public_api_up_pb2.APIUp], int]`: A tuple containing:
-  - The oldest buffered `APIUp` protobuf message, or `None` if the buffer is empty
-  - The remaining queue length in the buffer
-
-**Notes:**
-- The buffer has a maximum capacity of 50 frames. When the buffer is full, the oldest message is automatically removed to make room for new messages.
-- This method is thread-safe and can be called from multiple threads simultaneously.
-- The `APIUp` message contains all device status information, including base status, arm status, and secondary device status.
-
-Examples:
-```python
-# Basic usage example
-while not api.is_api_exit():
-    (data, num) = api.get_raw_data()
-    if data is not None:
-        # Process raw data
-        if data.HasField('base_status'):
-            # Handle chassis status
-            pass
-        elif data.HasField('arm_status'):
-            # Handle arm status
-            pass
-```
-
-# MotorBase
-
-## Overview
-The `MotorBase` class provides common motor control functionality for devices with motors. It is inherited by device classes that require motor control capabilities.
-
-## Key Features
-- Motor status monitoring
-- Common motor control operations
-- Temperature monitoring
-
-## Documentation
-For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase.md).
-
-# OptionalDeviceBase
-
-## `__init__`
-```python
-def __init__(self, read_only: bool, name: str, device_id, device_type, send_message_callback=None):
-```
-Initializes an optional device base class. These devices are matched by `device_id` (from `SecondaryDeviceStatus`) rather than `robot_type` and are used for processing optional fields in APIUp messages.
-
-**Parameters:**
-- `read_only` (bool): Whether the device is read-only
-- `name` (str): Device name
-- `device_id`: Device ID from SecondaryDeviceStatus
-- `device_type`: Device type from SecondaryDeviceStatus
-- `send_message_callback` (callable, optional): Callback function for sending messages
-
-**Examples:**
-```python
-# Usually called internally by HexDeviceApi when creating optional devices
-# Users typically don't need to call this directly
-```
-
-## get_device_summary
-```python
-def get_device_summary(self) -> Dict[str, Any]:
-```
-Gets the device status summary including name and assigned device ID.
-
-**Returns:**
-- `Dict[str, Any]`: Dictionary containing device status information with keys:
-  - `name`: Device name
-  - `device_id`: Device ID from SecondaryDeviceStatus
-
-**Examples:**
-```python
-summary = device.get_device_summary()
-print(f"Device: {summary['name']}")
-print(f"Device ID: {summary['device_id']}")
-```
 
 # DeviceBase
 
@@ -283,3 +252,58 @@ Gets the current device status summary.
 summary = device.get_device_summary()
 print(f"Device name: {summary['name']}")
 ```
+
+
+
+# OptionalDeviceBase
+
+## `__init__`
+```python
+def __init__(self, read_only: bool, name: str, device_id, device_type, send_message_callback=None):
+```
+Initializes an optional device base class. These devices are matched by `device_id` (from `SecondaryDeviceStatus`) rather than `robot_type` and are used for processing optional fields in APIUp messages.
+
+**Parameters:**
+- `read_only` (bool): Whether the device is read-only
+- `name` (str): Device name
+- `device_id`: Device ID from SecondaryDeviceStatus
+- `device_type`: Device type from SecondaryDeviceStatus
+- `send_message_callback` (callable, optional): Callback function for sending messages
+
+**Examples:**
+```python
+# Usually called internally by HexDeviceApi when creating optional devices
+# Users typically don't need to call this directly
+```
+
+## get_device_summary
+```python
+def get_device_summary(self) -> Dict[str, Any]:
+```
+Gets the device status summary including name and assigned device ID.
+
+**Returns:**
+- `Dict[str, Any]`: Dictionary containing device status information with keys:
+  - `name`: Device name
+  - `device_id`: Device ID from SecondaryDeviceStatus
+
+**Examples:**
+```python
+summary = device.get_device_summary()
+print(f"Device: {summary['name']}")
+print(f"Device ID: {summary['device_id']}")
+```
+
+
+# MotorBase
+
+## Overview
+The `MotorBase` class provides common motor control functionality for devices with motors. It is inherited by device classes that require motor control capabilities.
+
+## Key Features
+- Motor status monitoring
+- Common motor control operations
+- Temperature monitoring
+
+## Documentation
+For complete MotorBase documentation including all methods and usage examples, please refer to [API-MotorBase](API-Motorbase.md).
